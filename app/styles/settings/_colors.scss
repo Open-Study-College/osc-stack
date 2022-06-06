@@ -1,0 +1,54 @@
+///*----------------------------------*\
+//  #COLOUR SETTINGS
+//\*----------------------------------*/
+//
+// Set up a colour palette which allows us to theme the entire project from one location
+//
+//\*----------------------------------*/
+
+//--- Generic Colours
+$colour-pink: #e6126a; //Primary
+$colour-navy: #272145; // Secondary
+$colour-white: #fff; // primary
+$colour-mint: #40bfad; // Quaternary
+$colour-grey: #f1f1f1; // Quinary
+$colour-black: #131313; // Senary
+
+
+//--- Accent Colours
+$colour-light-pink: #f3b3d2; // Septenary
+$colour-light-blue: #8ed2d6; // Octonary
+$colour-mid-blue: #444a99; // Nonary
+$colour-red: #ea5338; // Denary
+$colour-yellow: #e9e078; // Duodenary
+
+
+//--- States
+$colour-error: #b42c2c;
+$colour-success: #469132;
+$colour-notice: #d87a00;
+$colour-disabled: #dcdddf;
+$colour-shadow: rgba($colour-black, 0.05);
+$colour-shadow-l: darken($colour-grey, 15%);
+
+:root {
+    --colour-pink: #{$colour-pink};
+    --colour-navy: #{$colour-navy};
+    --colour-white: #{$colour-white};
+    --colour-mint: #{$colour-mint};
+    --colour-grey: #{$colour-grey};
+    --colour-black: #{$colour-black};
+
+    --colour-light-pink: #{$colour-light-pink};
+    --colour-light-blue: #{$colour-light-blue};
+    --colour-mid-blue: #{$colour-mid-blue};
+    --colour-red: #{$colour-red};
+    --colour-yellow: #{$colour-yellow};
+
+    --colour-error: #{$colour-error};
+    --colour-success: #{$colour-success};
+    --colour-notice: #{$colour-notice};
+    --colour-disabled: #{$colour-disabled};
+    --colour-shadow: #{$colour-shadow};
+    --colour-shadow-l: #{$colour-shadow-l};
+}

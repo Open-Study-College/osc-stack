@@ -1,0 +1,42 @@
+@import "settings/settings";
+// @import "tools/font_size";
+
+html {
+    height: 100%;
+    font-family: Roboto, sans-serif;
+    //font-size: 62.5%;
+    font-weight: $weight-reg;
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+
+    font-family: $font-primary;
+    -webkit-font-smoothing: antialiased;
+
+    &:not(.has-no-bg) { background-color: $colour-navy; }
+}
+
+// is this ok in here?
+a {
+    text-decoration: none;
+}
+
+svg {
+    fill: currentColor;
+    // &:not(.has-no-bg) { background-color: $colour-quinary; }
+}
+
+main {
+    display: block;
+    flex: 1;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+}
+

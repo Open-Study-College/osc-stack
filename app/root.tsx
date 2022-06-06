@@ -13,11 +13,11 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
+import styles from '~/styles/dest/main.css';
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [{ rel: 'stylesheet', href: styles },];
 };
 
 export const meta: MetaFunction = () => ({

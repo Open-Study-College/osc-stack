@@ -9,4 +9,12 @@ node_modules
 /prisma/data.db
 /prisma/data.db-journal
 
-/app/styles/tailwind.css
+
+# remix-request-form
+*.log
+.DS_Store
+/.cache
+*.css.map
+/storybook-static
+package-lock.json
+yarn.lock

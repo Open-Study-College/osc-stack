@@ -1,0 +1,11 @@
+.o-row {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    &__container {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+}
