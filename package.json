@@ -4,9 +4,10 @@
   "sideEffects": false,
   "scripts": {
     "prepare": "husky install",
-    "build": "cross-env NODE_ENV=production npm run build:css && run-s build:*",
+    "build": "cross-env NODE_ENV=production npm run css && run-s build:*",
     "build:remix": "remix build",
-    "dev": "cross-env NODE_ENV=development npm run build:css && concurrently \"npm run watch:css\" \"run-p dev:*\"",
+    "css": "PORT=3001 LOAD_PATH=app/styles PATH_TO_MAIN_SCSS=/app/styles/main.scss PATH_TO_DEST_MAIN_CSS=/app/styles/dest PATH_TO_COMPONENTS=/app/components node bin/postcssBuild.js",
+    "dev": "cross-env NODE_ENV=development npm run css && concurrently \"npm run watch:css\" \"run-p dev:*\"",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
@@ -19,8 +20,7 @@
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"npx cypress run\"",
     "typecheck": "tsc -b && tsc -b cypress",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
-    "watch:css": "PORT=3001 LOAD_PATH=app/styles PATH_TO_MAIN_SCSS=/app/styles/main.scss PATH_TO_DEST_MAIN_CSS=/app/styles/dest node bin/postcss.js",
-    "build:css": "PORT=3001 LOAD_PATH=app/styles PATH_TO_MAIN_SCSS=/app/styles/main.scss PATH_TO_DEST_MAIN_CSS=/app/styles/dest PATH_TO_COMPONENTS=/app/components node bin/postcssBuild.js"
+    "watch:css": "PORT=3001 LOAD_PATH=app/styles PATH_TO_MAIN_SCSS=/app/styles/main.scss PATH_TO_DEST_MAIN_CSS=/app/styles/dest node bin/postcss.js"
   },
   "prettier": {},
   "eslintIgnore": [
