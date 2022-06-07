@@ -39,8 +39,18 @@ const transpileCss = async (file, outputFile = undefined) => {
 
     if (outputFile === undefined) {
         fs.writeFileSync(file.replace('.scss', '.css'), result.css);
+        console.log('-- created: ', file.replace('.scss', '.css'));
     } else {
+        mkDirByPathSync(path.dirname(outputFile));
         fs.writeFileSync(outputFile, result.css);
+        console.log('-- created: ', file.replace('.scss', '.css'));
     }
 };
+
+function mkDirByPathSync(targetDir) {
+    if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+    }
+}
+
 module.exports = transpileCss;

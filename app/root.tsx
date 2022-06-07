@@ -19,7 +19,7 @@ import { useEmotionCache } from "./hooks/useEmotionCache";
 import DOMPurify from "isomorphic-dompurify";
 
 import { getUser } from "./session.server";
-import styles from '~/styles/dest/main.css';
+import styles from 'app/styles/dest/main.css';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles },];

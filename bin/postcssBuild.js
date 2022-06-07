@@ -4,7 +4,7 @@ const transpileCss = require('./utils/helpers');
 require('dotenv').config();
 
 // build app/components
-function fromDir(startPath, filter) {
+async function fromDir(startPath, filter) {
     if (!fs.existsSync(startPath)) {
         console.log('no dir ', startPath);
         return;
@@ -18,15 +18,20 @@ function fromDir(startPath, filter) {
             fromDir(filename, filter); //recurse
         } else if (filename.endsWith(filter)) {
             console.log('-- found: ', filename);
-            transpileCss(filename);
+            await transpileCss(filename);
         }
     }
 }
 
-fromDir(path.join(process.cwd(), process.env.PATH_TO_COMPONENTS), '.scss');
+async function fromMain() {
+    if (fs.existsSync(path.join(process.cwd(), process.env.PATH_TO_MAIN_SCSS))) {
+        console.log('-- found: ', path.join(process.cwd(), process.env.PATH_TO_MAIN_SCSS));
+        await transpileCss(
+            path.join(process.cwd(), process.env.PATH_TO_MAIN_SCSS),
+            path.join(process.cwd(), process.env.PATH_TO_DEST_MAIN_CSS)
+        );
+    }
+}
 
-// build main.scss
-transpileCss(
-    path.join(process.cwd(), process.env.PATH_TO_MAIN_SCSS),
-    path.join(process.cwd(), process.env.PATH_TO_DEST_MAIN_CSS, '/main.css')
-);
+fromDir(path.join(process.cwd(), process.env.PATH_TO_COMPONENTS), '.scss');
+fromMain();
