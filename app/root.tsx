@@ -74,12 +74,15 @@ const Document = withEmotionCache(
 );
 
 export default function App() {
-    const { colorScheme } = useLoaderData();
-    return (
-        <Document>
-            <ChakraProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
-                <Outlet />
-            </ChakraProvider>
-        </Document>
-    );
+  const { colorScheme } = useLoaderData();
+  return (
+    <Document>
+      <ChakraProvider theme={colorScheme === "light" ? lightTheme : darkTheme}>
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </ChakraProvider>
+    </ Document >
+  );
 }
