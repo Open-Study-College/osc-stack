@@ -1,5 +1,9 @@
+import type { HeadersFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { getColorScheme } from "./cookie";
+import lightTheme from "./theme/lightTheme";
+import darkTheme from "./theme/darkTheme";
 import type {
-  HeadersFunction,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
@@ -12,14 +16,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
-import { getColorScheme } from "./cookie";
-import lightTheme from "./theme/lightTheme";
-import darkTheme from "./theme/darkTheme";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
