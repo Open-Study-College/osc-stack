@@ -5,18 +5,15 @@ yarn.lock
 pnpm-lock.yaml
 pnpm-lock.yml
 
-
 # Packages #
 ############
 node_modules
-
 
 # Environment #
 ######################
 /build
 /public/build
 .env
-
 
 # Logs, Caches and Databases #
 ######################
@@ -25,7 +22,6 @@ node_modules
 /prisma/data.db
 /prisma/data.db-journal
 
-
 # Compiled Source #
 ######################
 /cypress/screenshots
@@ -33,7 +29,6 @@ node_modules
 /storybook-static
 *.css
 *.css.map
-
 
 # OS generated files #
 ######################
