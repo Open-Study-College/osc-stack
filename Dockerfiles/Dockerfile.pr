@@ -57,6 +57,9 @@ COPY --from=build /myapp/public /myapp/public
 
 ADD . .
 
+RUN mkdir -p prisma
+COPY ./prisma /app/prisma
+
 EXPOSE 3306
 EXPOSE 8080
 
