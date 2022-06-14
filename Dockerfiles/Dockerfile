@@ -43,6 +43,7 @@ ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://ap2ksarsibr8:pscale_pw_3YndOHxE0_Yv
 ENV SHADOW_DATABASE_URL='mysql://z1f1aqscztwy:pscale_pw_KykZLKn8sk3PnhXN_y0koCJOlpYnwMO0AftFjeRj4Fs@3jp0zeck4lsy.eu-west-3.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./server-ca.pem'
 ENV PORT="8080"
 ENV NODE_ENV="production"
+ENV CLIENT_CERTIFICATE=$CLIENT_CERTIFICATE
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nsqlite3 \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
@@ -54,6 +55,7 @@ COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
+COPY --from=build /myapp/prisma /myapp/public
 
 ADD . .
 
