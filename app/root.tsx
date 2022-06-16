@@ -16,13 +16,13 @@ import tailwindStylesheetUrl from './styles/tailwind.css';
 import { getUser } from './session.server';
 
 export const links: LinksFunction = () => {
-    return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }];
+  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
 };
 
 export const meta: MetaFunction = () => ({
-    charset: 'utf-8',
-    title: 'Remix Notes',
-    viewport: 'width=device-width,initial-scale=1'
+  charset: "utf-8",
+  title: "Remix Notes",
+  viewport: "width=device-width,initial-scale=1",
 });
 
 type LoaderData = {
@@ -41,34 +41,37 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
 };
 
+
 interface DocumentProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
-const Document = withEmotionCache(({ children }: DocumentProps, emotionCache: EmotionCache) => {
+const Document = withEmotionCache(
+  ({ children }: DocumentProps, emotionCache: EmotionCache) => {
     const serverStyleData = useEmotionCache(emotionCache);
     return (
-        <html lang="en" className="h-full">
-            <head>
-                <Links />
-                <Meta />
-                {serverStyleData.map(({ key, ids, css }) => (
-                    <style
-                        key={key}
-                        data-emotion={`${key} ${ids.join(' ')}`}
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(css) }}
-                    />
-                ))}
-            </head>
-            <body>
-                {children}
-                <ScrollRestoration />
-                <Scripts />
-                <LiveReload />
-            </body>
-        </html>
+      <html lang="en" className="h-full">
+        <head>
+          <Links />
+          <Meta />
+          {serverStyleData.map(({ key, ids, css }) => (
+            <style
+              key={key}
+              data-emotion={`${key} ${ids.join(" ")}`}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(css) }}
+            />
+          ))}
+        </head>
+        <body>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
     );
-});
+  }
+);
 
 export default function App() {
     const { colorScheme } = useLoaderData();
