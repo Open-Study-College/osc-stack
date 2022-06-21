@@ -4,10 +4,10 @@
   "sideEffects": false,
   "scripts": {
     "prepare": "husky install",
-    "build": "run-s build:*",
+    "build": "npm run prisma:generate && run-s build:*",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "dev": "run-p dev:*",
+    "dev": "npm run prisma:generate && run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -25,7 +25,8 @@
     "pretest:e2e:run": "npm run build",
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"npx cypress run\"",
     "typecheck": "tsc -b && tsc -b cypress",
-    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
+    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
+    "prisma:generate": "npx prismerge -i prismerge.json && npx prisma generate"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -56,6 +57,7 @@
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
     "@faker-js/faker": "^6.3.1",
+    "@prisma-utils/prismerge": "^1.3.2",
     "@remix-run/dev": "^1.5.1",
     "@remix-run/eslint-config": "^1.5.1",
     "@testing-library/cypress": "^8.0.3",
