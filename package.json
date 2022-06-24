@@ -4,7 +4,7 @@
   "sideEffects": false,
   "scripts": {
     "prepare": "husky install",
-    "build": "node bin/moveMigrationsFolderBack.js && npx prisma migrate reset && run-s build:*",
+    "build": "node bin/moveMigrationsFolderBack.js  && npx prisma generate && npx prisma migrate reset && run-s build:*",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "dev": "node bin/moveMigrationsFolder.js && npx prisma migrate dev --name init && npx prisma db seed && run-p dev:*",
