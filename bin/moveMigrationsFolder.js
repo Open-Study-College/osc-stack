@@ -26,7 +26,7 @@ try {
 
         mv(oldPath, newPath, function (err) {
         if (err) throw err
-        console.log('Successfully renamed - AKA moved!')
+        console.log('Successfully renamed - AKA moved mysql folder out of prisma!')
         })
   }
 } catch(err) {
