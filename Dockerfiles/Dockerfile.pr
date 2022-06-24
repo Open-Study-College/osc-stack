@@ -3,8 +3,8 @@ FROM node:16-bullseye-slim as base
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
-ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://0km8q7u4jdmk:pscale_pw_1Vs3DATSnjpCrMdSprJ8R8u1iQSKEMUXSXdRC-0nYd4@g0gbljs4ymlr.us-east-4.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem'
-ENV SHADOW_DATABASE_URL='mysql://yhz8t72trvkt:pscale_pw_z8GYVmz6NNVMgsMR3jD3nl2awTljYtS6T1c8pgSLhak@cj8579ssc3sr.eu-west-3.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem'
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://1n2bdctx2t9o:pscale_pw_Hr2IezBNX7b3wT2Z208Sbpp0Cq-CNPmF1IxavbcjK7c@ttpk5bq1fvyq.us-east-4.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem'
+ENV SHADOW_DATABASE_URL='mysql://421p0l2gnxa2:pscale_pw_QWupSicfF_u5kgs9kHZbDCE-L0vvXL78fKB9LA8bmUE@ahhh4agj6mng.us-east-2.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem'
 ENV PORT="8080"
 ENV NODE_ENV="production"
 
