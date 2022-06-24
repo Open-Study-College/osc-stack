@@ -4,10 +4,10 @@
   "sideEffects": false,
   "scripts": {
     "prepare": "husky install",
-    "build": "run-s build:*",
+    "build": "node bin/moveMigrationsFolderBack.js && npx prisma migrate reset && run-s build:*",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "dev": "run-p dev:*",
+    "dev": "node bin/moveMigrationsFolder.js && npx prisma migrate dev --name init && npx prisma db seed && run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -45,6 +45,7 @@
     "dotenv": "^16.0.1",
     "framer-motion": "^6.3.10",
     "isomorphic-dompurify": "^0.19.0",
+    "mv": "^2.1.1",
     "react": "^18",
     "react-dom": "^18",
     "tiny-invariant": "^1.2.0"
