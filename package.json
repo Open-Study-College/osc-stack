@@ -5,7 +5,7 @@
   "scripts": {
     "pre-commit": "lint-staged",
     "prepare": "husky install",
-    "build": "npm run SwapMysqlout && run-s build:*",
+    "build": "run-s build:*",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "SwapMysqlin": "node bin/SwapMysqlin.js",
