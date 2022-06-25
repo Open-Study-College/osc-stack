@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysqlout && npm run npx migrate dev --force
+npm run SwapMysqlout && npx migrate dev --force
