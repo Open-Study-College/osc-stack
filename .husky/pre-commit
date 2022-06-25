@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run moveMigrationsFolderBack
-npx prisma migrate dev
+npm run SwapMysqlin && npx prisma migrate dev
