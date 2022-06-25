@@ -1,6 +1,8 @@
 # base node image
 FROM node:16-bullseye-slim as base
 
+RUN npx prisma migrate dev --force
+
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
 ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://1n2bdctx2t9o:pscale_pw_Hr2IezBNX7b3wT2Z208Sbpp0Cq-CNPmF1IxavbcjK7c@ttpk5bq1fvyq.us-east-4.psdb.cloud/osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem'
