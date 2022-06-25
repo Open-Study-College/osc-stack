@@ -16,7 +16,7 @@ try {
             if (err) {
                 return console.log(err);
             }
-            var result = data.replace(/mysql/g, 'sqlite');
+            var result = data.replace(/mysql/g, 'sqlite').replace(/PLANETSCALE_PRISMA_DATABASE_URL/g, 'DATABASE_URL')
 
             fs.writeFile(path.join(process.cwd(), '/prisma/schema.prisma'), result, 'utf8', function (err) {
                 if (err) return console.log(err);

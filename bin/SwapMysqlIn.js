@@ -12,16 +12,18 @@ const swapMigrationHistories = (prisma, sql) => {
 try {
 
         // replace the string in schema.prisma
+        // replace database url in schema schema.prisma
         fs.readFile(path.join(process.cwd(), '/prisma/schema.prisma'), 'utf8', function (err,data) {
             if (err) {
                 return console.log(err);
             }
-            var result = data.replace(/sqlite/g, 'mysql');
+            var result = data.replace(/sqlite/g, 'mysql').replace(/env("DATABASE_URL")/g, 'env("PLANETSCALE_PRISMA_DATABASE_URL")')
 
             fs.writeFile(path.join(process.cwd(), '/prisma/schema.prisma'), result, 'utf8', function (err) {
                 if (err) return console.log(err);
             });
         });
+
 
 
   function copyFolderSync(from, to) {
