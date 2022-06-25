@@ -10,7 +10,7 @@
     "build:remix": "remix build",
     "SwapMysqlin": "node bin/SwapMysqlin.js",
     "SwapMysqlout": "node bin/SwapMysqlout.js",
-    "dev": "npm run SwapMysqlin && run-p dev:*",
+    "dev": "run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
