@@ -9,6 +9,7 @@
     "build:remix": "remix build",
     "SwapMysqlin": "node bin/SwapMysqlin.js",
     "SwapMysqlout": "node bin/SwapMysqlout.js",
+    "schema2:migrate": "npx prisma migrate dev --schema ./prisma/schema.prisma",
     "dev": "run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
@@ -100,7 +101,7 @@
   },
   "lint-staged": {
     "*": [
-      "npm run SwapMysqlin && npx prisma migrate dev --force && git add ."
+      "npm run SwapMysqlin && npx run prismaMigrateNonInteractive && git add ."
     ]
   }
 }
