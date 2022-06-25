@@ -77,7 +77,3 @@ if(fs.existsSync(path.join(process.cwd(), '/prisma/migrations/mysql.json'))){
 swapMigrationHistories(process.env.SQL_MIGRATION, process.env.PRISMA_MIGRATION)
 }
 
-if(!fs.existsSync(path.join(process.cwd(), '/prisma/migrations/mysql.json'))) {
-  
-}
-
