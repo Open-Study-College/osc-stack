@@ -16,7 +16,7 @@ try {
             if (err) {
                 return console.log(err);
             }
-            var result = data.replace(/mysql/g, 'sqlite');
+            var result = data.replace(/sqlite/g, 'mysql');
 
             fs.writeFile(path.join(process.cwd(), '/prisma/schema.prisma'), result, 'utf8', function (err) {
                 if (err) return console.log(err);
