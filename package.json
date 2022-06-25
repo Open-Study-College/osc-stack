@@ -101,7 +101,7 @@
   },
   "lint-staged": {
     "*": [
-      "npm run SwapMysqlin && npx prisma migrate dev && git add ."
+      "npm run SwapMysqlin && npx prisma migrate dev --force && git add ."
     ]
   }
 }
