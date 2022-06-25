@@ -97,10 +97,5 @@
   },
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
-  },
-  "lint-staged": {
-    "*": [
-      "npm run SwapMysqlin && npx run prismaMigrateNonInteractive && git add ."
-    ]
   }
 }
