@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysqlin && npx prisma db push
+npm run SwapMysqlin && npx prisma db push && git add .

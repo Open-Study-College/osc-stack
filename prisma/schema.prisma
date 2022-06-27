@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider             = "sqlite"
-  url                  = env("SQLITE_DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("PLANETSCALE_PRISMA_DATABASE_URL")
   shadowDatabaseUrl    = env("PRISMA_SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
@@ -20,9 +20,21 @@ model User {
   password Password?
 }
 
+model User2 {
+  id    String @id @default(cuid())
+  email String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  password       Password? @relation(fields: [passwordUserId], references: [userId])
+  passwordUserId String?
+}
+
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String  @unique
+  User2  User2[]
 }
