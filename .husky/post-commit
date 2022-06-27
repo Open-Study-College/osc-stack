@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysqlout && npx prisma db push && git clean -f -d && git reset --hard
+npm run SwapMysql && git clean -f -d && git reset --hard
