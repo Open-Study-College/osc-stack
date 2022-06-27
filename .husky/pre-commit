@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysqlout && npx prisma generate --force
+npm run SwapMysqlin && npx prisma db push
