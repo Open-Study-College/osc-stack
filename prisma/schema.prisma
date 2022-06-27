@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("PLANETSCALE_PRISMA_DATABASE_URL")
+  provider             = "sqlite"
+  url                  = env("SQLITE_DATABASE_URL")
   shadowDatabaseUrl    = env("PRISMA_SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
@@ -18,15 +18,6 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-}
-
-model User2 {
-  id    String @id @default(cuid())
-  email String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
 }
 
 model Password {
