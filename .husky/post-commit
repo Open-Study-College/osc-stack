@@ -6,4 +6,8 @@ if [ -e .commit ]
     rm .commit
     git add .
     git commit --amend -C HEAD --no-verify
-    npm run SwapMysql && git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --skip-worktree && git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --skip-worktree && git update-index --skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma && git reset --hard && git clean -f
+    npm run SwapMysql
+    git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --skip-worktree 
+    git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --skip-worktree 
+    git update-index --skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
+    git reset --hard && git clean -f
