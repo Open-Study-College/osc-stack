@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysql && npx prisma db push && git add . && git commit --amend --no-edit --no-verify
+npm run SwapMysql && npx prisma db push && git add . && git commit --all --amend --no-edit --no-verify
