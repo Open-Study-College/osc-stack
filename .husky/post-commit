@@ -3,7 +3,7 @@
 
 # remove commit, add new files, re-commit, swap back sqlite, stop tracking migrations stuff
     rm .commit
-    git add .
+    git add -A
     git commit --amend -C HEAD --no-verify
     git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --skip-worktree 
     git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --skip-worktree 
