@@ -4,8 +4,8 @@
 # replace sqlite with mysql
 npm run SwapMysql
 # start tracking migrations stuff
-git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
-git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --no-skip-worktree 
-git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --no-skip-worktree 
+#git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
+#git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --no-skip-worktree 
+#git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --no-skip-worktree 
 # push changes to planetscale
 npx prisma db push
