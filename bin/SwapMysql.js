@@ -49,17 +49,22 @@ try {
 
 
         // move prisma migrations folder out
-  if (fs.existsSync(prismaMigrations)) {
+  if (!fs.existsSync(prismaMigrations)) {
+        fs.mkdirSync(prismaMigrations, { recursive: true})
         copyFolderSync(sqlMigrations, prismaMigrations, function (err) {
           if (err) throw err
           console.log('Successfully renamed - AKA moved mysql folder out of prisma!')
           }) 
+          fs.rmSync(sqlMigrations, { recursive: true, force: true });
+          fs.mkdirSync(sqlMigrations, { recursive: true})
+          fs.rmSync(prismaMigrations, { recursive: true, force: true });
   } else if(fs.existsSync(sqlMigrations)) {
      copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
           if (err) throw err
           console.log('Successfully renamed - AKA moved migrations folder into prisma!')
           }) 
-        fs.rmSync(sqlMigrations, { recursive: true, force: true });
+        fs.rmSync([prismaMigrations], { recursive: true, force: true });
+        fs.mkdirSync(prismaMigrations, { recursive: true})
   }
   else {
     throw new Error('One or more migration histories missing')
