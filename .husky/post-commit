@@ -1,6 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# remove commit, add new files, re-commit, swap back sqlite, stop tracking migrations stuff
     rm .commit
     git add .
     git commit --amend -C HEAD --no-verify
