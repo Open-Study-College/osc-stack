@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run SwapMysql && git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma && npx prisma db push && git add . && git commit --amend --no-edit --no-verify
+npm run SwapMysql && git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma && npx prisma db push && git add .
