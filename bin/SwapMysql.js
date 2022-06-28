@@ -8,10 +8,14 @@ const swapMigrationHistories = (prisma, sql) => {
   var prismaMigrations =  path.join(process.cwd(), prisma)
   var sqlMigrations = path.join(process.cwd(), sql)
 
+function isEmpty(path) {
+    return fs.readdirSync(path).length === 0;
+}
+
 
 try {
         // replace the string in schema.prisma
-  if (fs.existsSync(prismaMigrations)) {
+  if (isEmpty(prismaMigrations)) {
         fs.readFile(path.join(process.cwd(), '/prisma/schema.prisma'), 'utf8', function (err,data) {
             if (err) {
                 return console.log(err);
@@ -22,7 +26,7 @@ try {
                 if (err) return console.log(err);
             });
         });
-          } else if(fs.existsSync(sqlMigrations)) {
+          } else if(isEmpty(sqlMigrations)) {
                     fs.readFile(path.join(process.cwd(), '/prisma/schema.prisma'), 'utf8', function (err,data) {
             if (err) {
                 return console.log(err);
@@ -46,10 +50,6 @@ try {
           }
       });
   }
-
-function isEmpty(path) {
-    return fs.readdirSync(path).length === 0;
-}
 
 
         // move prisma migrations folder out
