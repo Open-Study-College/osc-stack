@@ -50,12 +50,12 @@ try {
 
         // move prisma migrations folder out
   if (fs.existsSync(prismaMigrations)) {
-        copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
+        copyFolderSync(sqlMigrations, prismaMigrations, function (err) {
           if (err) throw err
           console.log('Successfully renamed - AKA moved mysql folder out of prisma!')
           }) 
   } else if(fs.existsSync(sqlMigrations)) {
-     copyFolderSync(sqlMigrations, prismaMigrations, function (err) {
+     copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
           if (err) throw err
           console.log('Successfully renamed - AKA moved migrations folder into prisma!')
           }) 
