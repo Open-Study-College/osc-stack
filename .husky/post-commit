@@ -2,13 +2,12 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # remove commit, add new files, re-commit, swap back sqlite, stop tracking migrations stuff
-    echo 'post-receive executed' >> hooks.log
-    npm run SwapMysql
-    echo 'post-receive executed' >> hooks.log
+    echo 'sqlite swapped in' >> hooks.log
     rm .commit
     git add -A
     git commit --amend -C HEAD --no-verify
+    echo 'commited db push changes to ' >> hooks.log
     # git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --skip-worktree 
     # git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --skip-worktree 
     # git update-index --skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
-    echo 'post-receive executed' >> hooks.log
+    npm run SwapMysql

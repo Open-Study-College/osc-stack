@@ -8,7 +8,7 @@ echo 'sqlite swapped in' >> hooks.log
 git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
 git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --no-skip-worktree 
 git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --no-skip-worktree 
-echo 'files untracked' >> hooks.log
+echo 'files tracked' >> hooks.log
 # push changes to planetscale
 npx prisma db push
 echo 'prisma changeses pushed to mysql' >> hooks.log
