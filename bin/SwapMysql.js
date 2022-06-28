@@ -47,9 +47,13 @@ try {
       });
   }
 
+function isEmpty(path) {
+    return fs.readdirSync(path).length === 0;
+}
+
 
         // move prisma migrations folder out
-  if (!fs.existsSync(prismaMigrations)) {
+  if (isEmpty(prismaMigrations)) {
         fs.mkdirSync(prismaMigrations, { recursive: true})
         copyFolderSync(sqlMigrations, prismaMigrations, function (err) {
           if (err) throw err
@@ -57,13 +61,12 @@ try {
           }) 
           fs.rmSync(sqlMigrations, { recursive: true, force: true });
           fs.mkdirSync(sqlMigrations, { recursive: true})
-          fs.rmSync(prismaMigrations, { recursive: true, force: true });
-  } else if(fs.existsSync(sqlMigrations)) {
-     copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
+  } else if(isEmpty(sqlMigrations)) {
+        copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
           if (err) throw err
           console.log('Successfully renamed - AKA moved migrations folder into prisma!')
           }) 
-        fs.rmSync([prismaMigrations], { recursive: true, force: true });
+        fs.rmSync(prismaMigrations, { recursive: true, force: true });
         fs.mkdirSync(prismaMigrations, { recursive: true})
   }
   else {
