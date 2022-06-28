@@ -12,7 +12,6 @@ function isEmpty(path) {
     return fs.readdirSync(path).length === 0;
 }
 
-
 try {
         // replace the string in schema.prisma
   if (isEmpty(prismaMigrations)) {
