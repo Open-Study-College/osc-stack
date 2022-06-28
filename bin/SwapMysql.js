@@ -59,7 +59,7 @@ try {
           if (err) throw err
           console.log('Successfully renamed - AKA moved mysql folder out of prisma!')
           }) 
-          fs.rmSync(sqlMigrations, { recursive: true, force: true });
+          fs.rmSync(sqlMigrations, { recursive: true });
           fs.mkdirSync(sqlMigrations, { recursive: true})
   } else if(isEmpty(sqlMigrations)) {
         copyFolderSync(prismaMigrations, sqlMigrations, function (err) {
