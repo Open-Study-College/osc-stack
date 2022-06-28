@@ -2,12 +2,13 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # replace sqlite with mysql
-echo 'post-receive executed' >> hooks.log
 npm run SwapMysql
+echo 'sqlite swapped in' >> hooks.log
 # start tracking migrations stuff
-#git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
-#git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --no-skip-worktree 
-#git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --no-skip-worktree 
+git update-index --no-skip-worktree ~/Desktop/sites/osc-academic-hub/prisma/schema.prisma 
+git ls-files -z ~/Desktop/sites/osc-academic-hub/prisma/migrations | xargs -0 git update-index --no-skip-worktree 
+git ls-files -z ~/Desktop/sites/osc-academic-hub/migrations | xargs -0 git update-index --no-skip-worktree 
+echo 'files untracked' >> hooks.log
 # push changes to planetscale
 npx prisma db push
-echo 'post-receive executed' >> hooks.log
+echo 'prisma changeses pushed to mysql' >> hooks.log
