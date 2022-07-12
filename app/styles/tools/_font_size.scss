@@ -1,3 +1,4 @@
+@use "sass:math";
 ///*----------------------------------*\
 //  #FONT-SIZE
 //\*----------------------------------*/
@@ -13,25 +14,8 @@
 // @include font-size($size-alpha, $line-height); // overrides line-height
 
 @mixin font-size($font-size, $line-height: null) {
-    font-size: $font-size / 10 + rem;
+    font-size: math.div($font-size, 10) + rem;
     @if ($line-height != null) {
         line-height: $line-height;
     }
-}
-
-
-// LEGACY
-@function torem($curr: 20, $fz: 16) {
-    @return ($curr/$fz) + rem;
-}
-// 16px = 1rem
-// 18px = 1.125rem
-// 21px = 1.3125rem
-// 28px = 1.75rem
-// 37px = 2.3125rem
-// 49px = 3.0625rem
-// 65px = 4.0625rem
-
-@function toem($curr: 20, $fz: 16) {
-    @return ($curr/$fz) + em;
 }

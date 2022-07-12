@@ -1,3 +1,7 @@
+@use "sass:math";
+@use "sass:meta";
+@use "global";
+
 ///*----------------------------------*\
 //  #TYPOGRAPHY SETTINGS
 //\*----------------------------------*/
@@ -27,7 +31,7 @@ $weight-bold: 700;
 
 // Base Sizes
 $base-font-size: 16;
-$base-line-height: $global-scale-ratio;
+$base-line-height: global.$global-scale-ratio;
 
 // In Ascending Order to adhere to SASS scope / cascade
 $size-micro: 10;
@@ -35,19 +39,19 @@ $size-milli: 12;
 $size-centi: 14;
 
 $size-zeta: $base-font-size; // 16px / 1.6rem
-$size-epsilon: _fs($size-zeta); // 21px / 2.1rem
-$size-delta: _fs($size-epsilon); // 28px / 2.8rem
-$size-gamma: _fs($size-delta); // 37px / 3.7rem
-$size-beta: _fs($size-gamma); // 49px / 4.9rem
-$size-alpha: _fs($size-beta); // 65px / 6.5rem
+$size-epsilon: global.fs($size-zeta); // 21px / 2.1rem
+$size-delta: global.fs($size-epsilon); // 28px / 2.8rem
+$size-gamma: global.fs($size-delta); // 37px / 3.7rem
+$size-beta: global.fs($size-gamma); // 49px / 4.9rem
+$size-alpha: global.fs($size-beta); // 65px / 6.5rem
 
-$size-kilo: _fs($size-epsilon * 3.4); // 139px / 13.9rem
-$size-mega: _fs($size-epsilon * 5); // 139px / 13.9rem
+$size-kilo: global.fs($size-epsilon * 3.4); // 139px / 13.9rem
+$size-mega: global.fs($size-epsilon * 5); // 139px / 13.9rem
 
 // Do some checks to ensure correct values are being passed
 @each $_font-globals in $base-font-size $base-line-height {
-    @if (type-of($_font-globals) == number) {
-        @if (unitless($_font-globals) == false) {
+    @if (meta.type-of($_font-globals) == number) {
+        @if (math.is-unitless($_font-globals) == false) {
             @error "`#{$_spacing-unit}` needs to be unitless.";
         }
     } @else {

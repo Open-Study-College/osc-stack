@@ -1,3 +1,5 @@
+@use "spacing";
+
 ///*----------------------------------*\
 //  #RADIUS SETTINGS
 //\*----------------------------------*/
@@ -8,6 +10,6 @@
 
 $radius: 50%;
 $radius-l: 100%;
-$radius-m: $global-spacing;
-$radius-s: $global-spacing-s;
-$radius-xs: calc($global-spacing-s / 2);
+$radius-m: spacing.$global-spacing;
+$radius-s: spacing.$global-spacing-s;
+$radius-xs: calc(spacing.$global-spacing-s / 2);

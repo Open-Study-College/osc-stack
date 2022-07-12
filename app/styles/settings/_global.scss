@@ -1,3 +1,4 @@
+@use "sass:math";
 ///*----------------------------------*\
 //  #GLOBAL SETTINGS
 //\*----------------------------------*/
@@ -21,6 +22,6 @@ $asset-path: "/osc/themes/osc/assets";
 $prop-config: () !default;
 
 // The _fs function allows us to calculate our font sizes defined in settings/typography using modular scale for brevity
-@function _fs($var) {
-    @return round($var * $global-scale-ratio);
+@function fs($var) {
+    @return math.round($var * $global-scale-ratio);
 }

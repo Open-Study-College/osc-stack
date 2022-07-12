@@ -1,42 +1,21 @@
-@import "settings/settings";
-// @import "tools/font_size";
+@use "../settings/colors";
+@use "../settings/typography" as *;
+@use "../tools/font_size" as *;
 
 html {
-    height: 100%;
-    font-family: Roboto, sans-serif;
-    //font-size: 62.5%;
-    font-weight: $weight-reg;
-    -webkit-tap-highlight-color: transparent;
-    text-size-adjust: 100%;
+  height: 100%;
+  color: colors.$colour-secondary;
+  font-size: 62.5%;
+  font-weight: $weight-reg;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  line-sizing: normal;
 }
 
 body {
-    margin: 0;
-    overflow-x: hidden;
-
-    font-family: $font-primary;
-    -webkit-font-smoothing: antialiased;
-
-    &:not(.has-no-bg) { background-color: $colour-navy; }
+  overflow-x: hidden;
+  @include font-size($base-font-size, $base-line-height);
+  font-family:$font-primary;
+  -webkit-font-smoothing: antialiased;
 }
-
-// is this ok in here?
-a {
-    text-decoration: none;
-}
-
-svg {
-    fill: currentColor;
-    // &:not(.has-no-bg) { background-color: $colour-quinary; }
-}
-
-main {
-    display: block;
-    flex: 1;
-    flex-direction: column;
-}
-
-footer {
-    margin-top: auto;
-}
-
