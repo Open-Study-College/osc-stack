@@ -43,6 +43,8 @@ FROM base
 ENV DATABASE_URL=file:/data/sqlite.db
 ENV PORT="8080"
 ENV NODE_ENV="production"
+ENV VAPID_PUBLIC_KEY="BHWoXUDWZQ7RuCCDlJq9LOCvGJF9lCcqFga5JolboVbDhNz9RrtuZwWHAMo7QGNZeYwn9_5xV9vPd6Ft36bqH78"
+ENV VAPID_PRIVATE_KEY="AXZ5bmTEsuIiwnxvkgJMH2nlY0omXW9kDpZkXWvSGhQ"
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
