@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation, useMatches } from '@remix-run/react';
 import type { HeadersFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useLocation } from '@remix-run/react';
 import { getColorScheme } from './cookie';
 import lightTheme from './theme/lightTheme';
 import darkTheme from './theme/darkTheme';
@@ -14,6 +14,7 @@ import type { EmotionCache } from '@emotion/react';
 import { useEmotionCache } from './hooks/useEmotionCache';
 import DOMPurify from 'isomorphic-dompurify';
 import styles from 'app/styles/dest/main.css';
+import * as gtag from '~/utils/gtags.client';
 import { getUser } from './session.server';
 import { checkConnectivity } from '~/utils/client/pwa-utils.client';
 import { PushNotification } from '~/utils/server/pwa-utils.server';
@@ -51,6 +52,8 @@ export const meta: MetaFunction = () => ({
 type LoaderData = {
     user: Awaited<ReturnType<typeof getUser>>;
     colorScheme: string;
+    gaTrackingId: string | undefined;
+    googleTagManagerId: string | undefined;
 };
 export const headers: HeadersFunction = () => ({
     'Accept-CH': 'Sec-CH-Prefers-Color-Scheme'
@@ -66,7 +69,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     return json<LoaderData>({
         user: await getUser(request),
-        colorScheme: await getColorScheme(request)
+        colorScheme: await getColorScheme(request),
+        gaTrackingId:
+            process.env.NODE_ENV === 'production' ? process.env.GA_TRACKING_ID : undefined,
+        googleTagManagerId:
+            process.env.NODE_ENV === 'production' ? process.env.GTM_TRACKING_ID : undefined
     });
 };
 interface DocumentProps {
@@ -108,11 +115,28 @@ const Document = withEmotionCache(({ children }: DocumentProps, emotionCache: Em
             }
         }
     }, [location, matches]);
+
+    const { gaTrackingId, googleTagManagerId } = useLoaderData<LoaderData>();
+
+    useEffect(() => {
+        if (gaTrackingId?.length) {
+            gtag.pageview(location.pathname, gaTrackingId);
+        }
+    }, [location, gaTrackingId]);
     return (
         <html lang="en" className="h-full">
             <head>
                 <Links />
                 <Meta />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','${googleTagManagerId}');`
+                    }}
+                ></script>
                 {serverStyleData.map(({ key, ids, css }) => (
                     <style
                         key={key}
@@ -122,6 +146,37 @@ const Document = withEmotionCache(({ children }: DocumentProps, emotionCache: Em
                 ))}
             </head>
             <body>
+                <noscript>
+                    <iframe
+                        title="gtm"
+                        src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerId}`}
+                        height="0"
+                        width="0"
+                        style={{ display: 'none', visibility: 'hidden' }}
+                    ></iframe>
+                </noscript>
+                {process.env.NODE_ENV === 'development' || !gaTrackingId ? null : (
+                    <>
+                        <script
+                            async
+                            src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+                        />
+                        <script
+                            async
+                            id="gtag-init"
+                            dangerouslySetInnerHTML={{
+                                __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `
+                            }}
+                        />
+                    </>
+                )}
                 {children}
                 <ScrollRestoration />
                 <Scripts />
