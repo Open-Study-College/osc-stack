@@ -10,7 +10,6 @@
     "dev": "run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development remix dev",
-    "format": "prettier --write .",
     "generate:css": "tailwindcss -o ./app/styles/tailwind.css",
     "lint": "eslint  --ignore-path .eslintignore --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --no-error-on-unmatched-pattern .",
     "lint-and-fix": "eslint --ignore-path .eslintignore --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --ext .ts,.tsx --fix --no-error-on-unmatched-pattern .",
