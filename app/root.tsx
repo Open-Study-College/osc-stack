@@ -211,6 +211,7 @@ export default function App() {
     return (
         <Document>
             <ChakraProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
+                <div> ci-cd testing</div>
                 <Outlet />
             </ChakraProvider>
         </Document>
