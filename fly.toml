@@ -1,4 +1,4 @@
-app = "osc-academic-hub"
+app = "osc-stack"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
@@ -8,6 +8,10 @@ allowed_public_ports = [ ]
 auto_rollback = true
 cmd = "start.sh"
 entrypoint = "sh"
+
+[env]
+  GA_TRACKING_ID="G-W3M8VV06DE"
+  GTM_TRACKING_ID="GTM-TGRN9Z6"
 
 [mounts]
 source = "data"
