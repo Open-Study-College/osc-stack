@@ -1,4 +1,4 @@
-name: PR Branch App
+name: PR Branch App (DB version)
 on:
   pull_request:
     types: [opened, reopened, synchronize]
