@@ -47,6 +47,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - run: |
+          echo  ${{secrets.ORG_NAME}} ${{secrets.DB_NAME}}
+
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
