@@ -1,7 +1,7 @@
 name: Create database branch
 
 env:
-  pscale_base_directory: .pscale
+  pscale_base_directory: pscale
 
 on:
   push:
