@@ -72,7 +72,7 @@ jobs:
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-branch-connection-string.sh "$BRANCH_NAME"
+          ./create-branch-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
       - name: Echo connection string
         id: echo-connection-string
