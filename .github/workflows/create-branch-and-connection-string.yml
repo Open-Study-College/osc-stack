@@ -74,8 +74,4 @@ jobs:
         run: |
           ./create-branch-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
-      - name: Echo connection string
-        id: echo-connection-string
-        env:
-          pscale_connection_string: ${{ steps.create-branch-connection-string.outputs.MY_DB_URL }}
-        run: echo ${{env.pscale_connection_string}}
+      - run: echo ${{env.MY_DB_URL}}
