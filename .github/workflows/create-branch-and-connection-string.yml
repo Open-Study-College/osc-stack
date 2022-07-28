@@ -77,5 +77,5 @@ jobs:
       - name: Echo connection string
         id: echo-connection-string
         env:
-          pscale_connection_string: ${{ steps.create-branch-connection-string.outputs.SELECTED_COLOR }}
+          pscale_connection_string: ${{ steps.create-branch-connection-string.outputs.MY_DB_URL }}
         run: echo ${{env.pscale_connection_string}}
