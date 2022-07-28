@@ -8,4 +8,5 @@
 BRANCH_NAME="$1"
 
 . ps-create-helper-functions.sh
+echo "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
