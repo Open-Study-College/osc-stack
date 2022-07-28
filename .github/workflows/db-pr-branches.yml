@@ -73,7 +73,7 @@ jobs:
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-branch-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
+          ./create-branch-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}" "sharesecret"
 
       - run: echo ${{env.MY_DB_URL}}
   build:
