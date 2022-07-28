@@ -60,7 +60,7 @@ jobs:
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-branch.sh "$BRANCH_NAME"
+          ./create-branch.sh
 
       - name: Create branch connection String
         id: create-branch-connection-string
