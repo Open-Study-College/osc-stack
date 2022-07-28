@@ -1,4 +1,4 @@
-name: Create database branch
+name: Create database branch and connection string
 
 env:
   pscale_base_directory: .pscale
@@ -47,9 +47,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - run: |
-          echo  ${{secrets.ORG_NAME}} ${{secrets.DB_NAME}}
-
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
@@ -63,3 +60,22 @@ jobs:
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
           ./create-branch.sh "$BRANCH_NAME"
+
+      - name: Create branch connection String
+        id: create-branch-connection-string
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+        working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
+        run: |
+          ./create-branch-connection-string.sh "$BRANCH_NAME"
+
+      - name: Echo connection string
+        id: echo-connection-string
+        env:
+          pscale_connection_string: ${{ steps.create-branch-connection-string.outputs.SELECTED_COLOR }}
+        run: echo ${{env.pscale_connection_string}}
