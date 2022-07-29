@@ -11,7 +11,7 @@ env:
 jobs:
   create_database_branch:
     name: Create database branch
-    if: startsWith(github.ref, 'refs/tags/db') === true
+    if: startsWith(github.ref, 'refs/tags/db') == true
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
