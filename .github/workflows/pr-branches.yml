@@ -83,8 +83,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # Only run one deployment at a time per PR.
-    concurrency:
-      group: pr-${{ env.PR_NUMBER }}
+    # concurrency:
+    #   group: pr-${{ env.PR_NUMBER }}
 
     # Create a GitHub deployment environment per pr branch app so it shows up
     # in the pull request UI.
