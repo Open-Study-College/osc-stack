@@ -77,11 +77,7 @@ jobs:
           ./export-db-connection-string.sh
 
       - run: echo ${{env.dbconnection_osc-academic-hub_add-planetscale-github-actions}}
-  build:
-    needs: create_database_branch
-    name: 🐳 Build PR Branch
-    runs-on: ubuntu-latest
-    steps:
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
