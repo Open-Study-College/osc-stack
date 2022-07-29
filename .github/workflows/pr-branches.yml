@@ -1,7 +1,6 @@
 name: PR Branch App
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
     branches:
       - "!db/**"
 
@@ -14,6 +13,10 @@ jobs:
     name: 🐳 Build PR Branch
     runs-on: ubuntu-latest
     steps:
+      - name: Set event number
+        run: |
+          echo "::set-env name=PR_NUMBER::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -80,12 +83,12 @@ jobs:
 
     # Only run one deployment at a time per PR.
     concurrency:
-      group: pr-${{ github.event.number }}
+      group: pr-${{ env.PR_NUMBER }}
 
     # Create a GitHub deployment environment per pr branch app so it shows up
     # in the pull request UI.
     environment:
-      name: pr-${{ github.event.number }}
+      name: pr-${{ env.PR_NUMBER }}
       url: ${{ steps.deploy_pr.outputs.url }}
 
     steps:
@@ -109,19 +112,19 @@ jobs:
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "create pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }} --org open-study-college"
+          args: "create pr-${{ env.PR_NUMBER }}-${{ steps.app_name.outputs.value }} --org open-study-college"
 
       - name: Create session secret
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "secrets set SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --config ./fly-pr.toml --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          args: "secrets set SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --config ./fly-pr.toml --app pr-${{ env.PR_NUMBER }}-${{ steps.app_name.outputs.value }}"
 
       - name: Create volume
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "volumes create data --region lhr --size 1 --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          args: "volumes create data --region lhr --size 1 --app pr-${{ env.PR_NUMBER }}-${{ steps.app_name.outputs.value }}"
 
       - name: 🚀 Deploy PR Branch
         if: ${{ github.ref != 'refs/heads/main' }}
@@ -130,7 +133,7 @@ jobs:
         with:
           image: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           org: "open-study-college"
-          name: pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}
-          args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          name: pr-${{ env.PR_NUMBER }}-${{ steps.app_name.outputs.value }}
+          args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-${{ env.PR_NUMBER }}-${{ steps.app_name.outputs.value }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
