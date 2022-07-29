@@ -73,7 +73,7 @@ jobs:
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./export-db-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
+          ./export-db-connection-string.sh
 
       - run: echo ${{env.dbconnection_osc-academic-hub_add-planetscale-github-actions}}
   build:
