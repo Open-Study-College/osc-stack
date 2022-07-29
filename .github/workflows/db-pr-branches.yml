@@ -75,7 +75,7 @@ jobs:
         run: |
           ./create-branch-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}" "sharesecret"
 
-      - run: echo ${{env.MY_DB_URL}}
+      - run: echo $MY_DB_URL
   build:
     needs: create_database_branch
     name: 🐳 Build PR Branch
