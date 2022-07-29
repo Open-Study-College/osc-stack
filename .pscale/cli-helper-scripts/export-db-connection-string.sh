@@ -3,7 +3,7 @@
 if [ -z "$DATABASE_URL" ] && [ -z "$MY_DB_URL" ]; then
     . use-pscale-docker-image.sh
     . authenticate-ps.sh
-    # unset PLANETSCALE_SERVICE_TOKEN
+    unset PLANETSCALE_SERVICE_TOKEN
     . set-db-and-org-and-branch-name.sh
     . create-branch-connection-string.sh
     create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$1"
