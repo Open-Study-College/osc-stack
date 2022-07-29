@@ -85,7 +85,7 @@ jobs:
     # Create a GitHub deployment environment per pr branch app so it shows up
     # in the pull request UI.
     environment:
-      name: pr-pr-${{ github.event.number }}
+      name: pr-${{ github.event.number }}
       url: ${{ steps.deploy_pr.outputs.url }}
 
     steps:
@@ -109,19 +109,19 @@ jobs:
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "create pr-pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }} --org open-study-college"
+          args: "create pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }} --org open-study-college"
 
       - name: Create session secret
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "secrets set SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --config ./fly-pr.toml --app pr-pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          args: "secrets set SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --config ./fly-pr.toml --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
 
       - name: Create volume
         uses: superfly/flyctl-actions@1.1
         continue-on-error: true
         with:
-          args: "volumes create data --region lhr --size 1 --app pr-pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          args: "volumes create data --region lhr --size 1 --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
 
       - name: 🚀 Deploy PR Branch
         if: ${{ github.ref != 'refs/heads/main' }}
@@ -130,7 +130,7 @@ jobs:
         with:
           image: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           org: "open-study-college"
-          name: pr-pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}
-          args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
+          name: pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}
+          args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
