@@ -62,11 +62,9 @@ jobs:
         run: |
           ./create-branch.sh "$BRANCH_NAME"
 
-      - name: Create branch connection String
-        id: create-branch-connection-string
+      - name: Export branch connection String
+        id: export-branch-connection-string
         env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
