@@ -6,7 +6,7 @@ if [ -z "$DATABASE_URL" ] && [ -z "$MY_DB_URL" ]; then
     # unset PLANETSCALE_SERVICE_TOKEN
     . set-db-and-org-and-branch-name.sh
     . create-branch-connection-string.sh
-    create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$1"
+    create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$CREDS"
     # if $2 and $3 are set, generate secret output links
     if [ -n "$2" ] && [ -n "$3" ]; then
         for i in `seq 1 $2`; do
