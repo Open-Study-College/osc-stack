@@ -71,6 +71,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+          CREDS: "tester"
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
           ./export-db-connection-string.sh
