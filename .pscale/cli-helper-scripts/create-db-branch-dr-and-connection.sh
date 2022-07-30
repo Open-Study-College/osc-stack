@@ -19,4 +19,5 @@ create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
 
 . create-branch-connection-string.sh
-create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$CREDS" "sharesecret"
+create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$CREDS" "$DDL_STATEMENTS"
+
