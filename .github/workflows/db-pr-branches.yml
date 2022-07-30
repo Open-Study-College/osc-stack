@@ -24,7 +24,7 @@ jobs:
         uses: actions/github-script@v3
         env:
           BRANCH_NAME: pr-${{ github.event.number }}
-          DDL_STATEMENTS: ${{ github.event.inputs.ddl_statements }}
+          DDL_STATEMENTS: pr-${{ github.event.number}};
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
