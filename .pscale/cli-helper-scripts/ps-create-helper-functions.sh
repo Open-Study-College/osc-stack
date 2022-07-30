@@ -39,7 +39,7 @@ function create-schema-change {
 
     echo "Changing schema with the following DDL statements:"
     echo $DDL_STATEMENTS
-    echo "$DDL_STATEMENTS" | pscale shell "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME"
+    echo pscale shell "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME"
     if [ $? -ne 0 ]; then
         echo "Schema change in $BRANCH_NAME could not be created"
         exit 1
