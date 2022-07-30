@@ -14,7 +14,7 @@ function create-branch-connection-string {
         exit 1
     fi
 
-    local output=`echo $raw_output
+    local output=`echo $raw_output`
     # if output is not "null", then password exists, delete it
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
