@@ -5,10 +5,12 @@
 
 . authenticate-ps.sh
 
-BRANCH_NAME="$1"
-DDL_STATEMENTS="$2" 
+DB_NAME="$1"
+BRANCH_NAME="$2" 
+ORG_NAME="$3"
+CREDS= "$4"
+DDL_STATEMENTS="$5"
 
-. set-db-and-org-and-branch-name.sh
 
 . ps-create-helper-functions.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
@@ -17,4 +19,4 @@ create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
 
 . create-branch-connection-string.sh
-create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}" "sharesecret"
+create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$CREDS" "sharesecret"
