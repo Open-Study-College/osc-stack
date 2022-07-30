@@ -14,7 +14,7 @@ function create-branch-connection-string {
         exit 1
     fi
 
-    local output=`echo $raw_output | jq -r "[.[] | select(.display_name == \"$CREDS\") ] | .[0].id "`
+    local output=`echo $raw_output
     # if output is not "null", then password exists, delete it
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
