@@ -48,6 +48,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - run: echo ${{ steps.validate_params.outputs.ddl_statements }}
+
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
