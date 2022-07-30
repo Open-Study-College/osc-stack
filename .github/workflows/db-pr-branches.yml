@@ -58,9 +58,10 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+          DDL_STATEMENTS: ${{ steps.validate_params.outputs.ddl_statements }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-branch.sh "$BRANCH_NAME"
+          ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
 
       - name: Export branch connection String
         id: export-branch-connection-string
