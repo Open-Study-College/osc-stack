@@ -23,14 +23,14 @@ jobs:
         id: validate_params
         uses: actions/github-script@v3
         env:
-          BRANCH_NAME: ${{ github.event.inputs.branch }}
-          DDL_STATEMENTS: ${{ github.event.inputs.ddl_statements }}
+          BRANCH_NAME: pr-${{ github.event.number }}
+          DDL_STATEMENTS: pr-${{ github.event.number}}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branch_name = process.env.BRANCH_NAME;
             const ddl_statements = process.env.DDL_STATEMENTS;
-            if (! /^[a-zA-Z0-9_-]+$/.test(branch_name)) {
+            if (! /^[a-zA-Z0-9_-/]+$/.test(branch_name)) {
               const error = `The branch name contains illegal characters: ${branch_name}`;
               core.error(error);
               core.setFailed(error);
