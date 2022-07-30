@@ -19,34 +19,8 @@ jobs:
         run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
         id: extract_branch
 
-      - name: Validate parameters
-        id: validate_params
-        uses: actions/github-script@v3
-        env:
-          BRANCH_NAME: pr-${{ github.event.number }}
-          DDL_STATEMENTS: pr-${{ github.event.number}};
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const branch_name = process.env.BRANCH_NAME;
-            const ddl_statements = process.env.DDL_STATEMENTS;
-            if (! /^[a-zA-Z0-9_-]+$/.test(branch_name)) {
-              const error = `The branch name contains illegal characters: ${branch_name}`;
-              core.error(error);
-              core.setFailed(error);
-            }
-            if (! /^.*;$/.test(ddl_statements)) {
-              const error = `The ddl statements do not end with an ;: ${ddl_statements}`;
-              core.error(error);
-              core.setFailed(error);
-            }
-            core.setOutput('branch_name', branch_name);
-            core.setOutput('ddl_statements', ddl_statements);
-
       - name: Checkout
         uses: actions/checkout@v2
-
-      - run: echo ${{ steps.validate_params.outputs.ddl_statements }}
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
@@ -57,7 +31,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+          BRANCH_NAME: pr-${{ github.event.number }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
           ./create-db-branch-dr-and-connection.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}" "sharesecret"
@@ -70,7 +44,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+          BRANCH_NAME: pr-${{ github.event.number }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
           ./export-db-connection-string.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}" "sharesecret"
