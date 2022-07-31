@@ -57,7 +57,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
+          BRANCH_NAME: pr-${{ github.event.number }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
           ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
