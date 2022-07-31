@@ -62,7 +62,7 @@ jobs:
         run: |
           ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
 
-      - run: echo ${{env.dbconnection_osc-academic-hub_add-planetscale-github-actions}}
+      - run: echo
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -109,7 +109,7 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            MY_DB_URL=${{ env.MY_DB_URL }}
+            MY_DB_URL=${{ env.MY_DB_URL }}osc-academic-hub?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.pr
           cache-from: type=local,src=/tmp/.buildx-cache
