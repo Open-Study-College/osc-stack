@@ -60,21 +60,7 @@ jobs:
           BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-branch.sh "$BRANCH_NAME"
-
-      - name: Export branch connection String
-        id: export-branch-connection-string
-        env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-          ORG_NAME: ${{secrets.ORG_NAME}}
-          DB_NAME: ${{secrets.DB_NAME}}
-          GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ steps.validate_params.outputs.branch_name }}
-          CREDS: "tester"
-        working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-        run: |
-          ./export-db-connection-string.sh
+          ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
 
       - run: echo ${{env.dbconnection_osc-academic-hub_add-planetscale-github-actions}}
 
