@@ -17,7 +17,7 @@ create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
 
 . create-branch-connection-string.sh
-create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred" "sharesecret"
+create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
     # if $2 and $3 are set, generate secret output links
     if [ -n "$2" ] && [ -n "$3" ]; then
         for i in `seq 1 $2`; do
