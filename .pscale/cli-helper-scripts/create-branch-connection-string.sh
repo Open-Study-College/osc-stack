@@ -22,5 +22,31 @@ function create-branch-connection-string {
     fi
 
     local DB_URL=`echo "$raw_output" |  jq -r ". | \"mysql://\" + .id +  \":\" + .plain_text +  \"@\" + .database_branch.access_host_url + \"/\""`
+    local GENERAL_CONNECTION_STRING=`echo "$raw_output" |  jq -r ". | .connection_strings.general"`
+
+read -r -d '' SECRET_TEXT <<EOF
+DATABASE_URL: $DB_URL
+$GENERAL_CONNECTION_STRING
+EOF
+
+    # if not running in CI
+    if [ -z "$CI" ]; then
+        echo "In the next lines, you will see your secret, branch connection information: " 
+        echo "$SECRET_TEXT"
+    elif [ -n "$secretshare" ]; then
+        # store the DB URL in secret store
+        echo "::notice ::Please follow the link in the next line and click on 'Read the Secret!' to see the secret, branch specific connection string for various frameworks."
+        local link=`curl -s -X POST -d "plain&secret=$SECRET_TEXT" https://shared-secrets-planetscale.herokuapp.com/`
+        echo "$link"
+        echo "::set-output name=CONNECTION_STRING_LINK::${link}"
+        export MY_DB_URL=$DB_URL
+        echo "MY_DB_URL=$DB_URL" >> $GITHUB_ENV
+    fi
+    echo
+    echo "Alternatively, you can connect to your new branch like this:"
+    echo "pscale shell \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
+    echo "or, to create a local tunnel to the database:"
+    echo "pscale connect \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
+    export MY_DB_URL=$DB_URL
     echo "MY_DB_URL=$DB_URL" >> $GITHUB_ENV
 }
