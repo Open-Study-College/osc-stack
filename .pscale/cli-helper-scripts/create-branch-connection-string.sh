@@ -14,11 +14,11 @@ function create-branch-connection-string {
         exit 1
     fi
 
-    local output= "$CREDS"
+    local output= 
     # if output is not "null", then password exists, delete it
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
-        pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$output" --org "$ORG_NAME"
+        pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$CREDS" --org "$ORG_NAME"
         # check return code, if not 0 then error
         if [ $? -ne 0 ]; then
             echo "Error: pscale password delete returned non-zero exit code $?"
