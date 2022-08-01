@@ -9,4 +9,3 @@ BRANCH_NAME="$1"
 
 . ps-create-helper-functions.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
-. dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
