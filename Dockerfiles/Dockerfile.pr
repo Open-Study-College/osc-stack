@@ -33,7 +33,6 @@ COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD prisma .
 RUN npx prisma generate
-RUN npx prisma db pull
 
 ADD . .
 RUN npm run build
@@ -46,6 +45,8 @@ ENV PORT="8080"
 ENV NODE_ENV="production"
 ARG MY_DB_URL
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}?sslaccept=strict&sslcert=./cacert.pem"
+
+RUN npx prisma db pull
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
