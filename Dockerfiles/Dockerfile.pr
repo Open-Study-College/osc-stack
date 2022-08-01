@@ -67,7 +67,7 @@ EXPOSE 8080
 
 # account for data already present when db was created 
 RUN npx prisma db pull 
-RUN npx prisma migrate dev --name copiedDbMigration
-RUN npx prisma migrate resolve --applied "copiedDbMigration"
+# RUN npx prisma migrate dev --name copiedDbMigration
+# RUN npx prisma migrate resolve --applied "copiedDbMigration"
 
 CMD cross-env npm start
