@@ -7,6 +7,5 @@
 
 set -ex
 npx prisma generate
-npx prisma db pull
 npx prisma migrate deploy
 npm run start
