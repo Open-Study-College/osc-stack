@@ -7,7 +7,7 @@ function create-db-branch {
     # delete the branch if it already exists and recreate branch is set
     if [ -n "$recreate_branch" ]; then
         echo "Trying to delete branch $BRANCH_NAME if it already existed ..."
-        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null
+        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null    
     fi
 
     pscale branch create "$DB_NAME" "$BRANCH_NAME" --region us-east --org "$ORG_NAME" --from "main"
