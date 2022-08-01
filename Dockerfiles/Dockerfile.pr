@@ -66,8 +66,4 @@ COPY ./prisma /app/prisma
 EXPOSE 3306
 EXPOSE 8080
 
-# account for data already present when db was created 
-RUN npx prisma db pull 
-RUN npx prisma db push 
-
 CMD cross-env npm start
