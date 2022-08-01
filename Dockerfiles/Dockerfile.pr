@@ -34,10 +34,6 @@ COPY --from=deps /myapp/node_modules /myapp/node_modules
 ADD prisma .
 RUN npx prisma generate
 
-# account for data already present when db was created 
-RUN npx prisma migrate dev --name copiedDbMigration
-RUN npx prisma migrate resolve --applied "copiedDbMigration"
-
 ADD . .
 RUN npm run build
 
@@ -68,5 +64,9 @@ COPY ./prisma /app/prisma
 
 EXPOSE 3306
 EXPOSE 8080
+
+# account for data already present when db was created 
+RUN npx prisma migrate dev --name copiedDbMigration
+RUN npx prisma migrate resolve --applied "copiedDbMigration"
 
 CMD cross-env npm start
