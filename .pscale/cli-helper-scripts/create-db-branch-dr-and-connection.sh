@@ -12,7 +12,7 @@ DDL_STATEMENTS="$2"
 
 . ps-create-helper-functions.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
-# create-schema-change "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DDL_STATEMENTS"
+create-schema-change "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DDL_STATEMENTS"
 create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
 
