@@ -60,7 +60,7 @@ jobs:
           BRANCH_NAME: pr-${{ github.event.number }}
         working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
         run: |
-          ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
+          ./create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - run: echo
 
