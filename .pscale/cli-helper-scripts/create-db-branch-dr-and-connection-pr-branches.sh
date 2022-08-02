@@ -27,4 +27,4 @@ create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
         done
     fi
 
-. .pscale/cli-helper-scripts/dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DIR"
+sudo "$DIR/.pscale/cli-helper-scripts/dump-and-restore-db-branch.sh" "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DIR"
