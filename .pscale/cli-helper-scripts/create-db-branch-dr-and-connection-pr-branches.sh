@@ -10,7 +10,7 @@ DDL_STATEMENTS="$2"
 
 . .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
 
-. .pscale/cli-helper-scripts/-create-helper-functions-pr-branches.sh
+. .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
 create-schema-change "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DDL_STATEMENTS"
 create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
