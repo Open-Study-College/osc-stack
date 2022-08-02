@@ -48,8 +48,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Make executeable
-        run: chmod +x ./.pscale/cli-helper-scripts/dump-and-restore-db-branch.sh
+      - name: Make dir
+        run: |
+          mkdir pscale_dump_${{secrets.DB_NAME}}_"$BRANCH_NAME"
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
