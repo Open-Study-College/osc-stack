@@ -50,7 +50,7 @@ jobs:
 
       - name: Make dir
         run: |
-          mkdir pscale_dump_${{secrets.DB_NAME}}_"$BRANCH_NAME"
+          mkdir pscale_dump_${{secrets.DB_NAME}}_$BRANCH_NAME
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
