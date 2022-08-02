@@ -27,4 +27,4 @@ create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
         done
     fi
 
-sudo dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
+sudo bash dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
