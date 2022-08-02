@@ -1,22 +1,22 @@
 #!/bin/bash
 
-. use-pscale-docker-image.sh
-. wait-for-branch-readiness.sh
+. .pscale/cli-helper-scripts/use-pscale-docker-image.sh
+. .pscale/cli-helper-scripts/wait-for-branch-readiness.sh
 
-. authenticate-ps.sh
+. .pscale/cli-helper-scripts/authenticate-ps.sh
 
 BRANCH_NAME="$1"
 DDL_STATEMENTS="$2" 
 
-. set-db-and-org-and-branch-name.sh
+. .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
 
-. ps-create-helper-functions-pr-branches.sh
+. .pscale/cli-helper-scripts/-create-helper-functions-pr-branches.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
 create-schema-change "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DDL_STATEMENTS"
 create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
 
-. create-branch-connection-string-pr-branches.sh
+. .pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
     # if $2 and $3 are set, generate secret output links
     if [ -n "$2" ] && [ -n "$3" ]; then
@@ -27,4 +27,4 @@ create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
         done
     fi
 
-. dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
+. .pscale/cli-helper-scripts/dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
