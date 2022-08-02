@@ -48,9 +48,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Make dir
-        run: mkdir pscale_dump_osc-academic_main
-
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
