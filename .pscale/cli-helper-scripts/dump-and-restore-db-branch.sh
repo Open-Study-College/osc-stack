@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tmpfolder="/main"
+tmpfolder=$DIR
 echo $HOME
 ls -la $HOME
 pscale database dump "$DB_NAME" "main" --org "$ORG_NAME" --output $tmpfolder
