@@ -48,6 +48,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: create temp directory
+      - run: echo "DIR=$(mktemp -d)" >> $GITHUB_ENV
+
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
@@ -58,7 +61,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ github.event.number }}
-          DIR: ${{github.workspace}}
+          DIR: ${{env.DIR}}
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
