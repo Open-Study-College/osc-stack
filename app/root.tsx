@@ -76,6 +76,7 @@ export default function App() {
   return (
     <Document>
       <ChakraProvider>
+        <h1>random change</h1>
         <Outlet />
       </ChakraProvider>
     </Document>
