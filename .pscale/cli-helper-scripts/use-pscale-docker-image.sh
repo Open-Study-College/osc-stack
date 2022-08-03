@@ -22,7 +22,7 @@ function pscale {
         command="`which pscale` $@"
     else
         # For debugging, set PSCALE_VERSION to a version of your choice. It defaults to "latest".
-        command="docker run -e PLANETSCALE_SERVICE_TOKEN=${PLANETSCALE_SERVICE_TOKEN:-""} -e PLANETSCALE_SERVICE_TOKEN_ID=$PLANETSCALE_SERVICE_TOKEN_ID -e PLANETSCALE_SERVICE_TOKEN_NAME=$PLANETSCALE_SERVICE_TOKEN_NAME -e HOME=/tmp -v $HOME/.config/planetscale:/tmp/.config/planetscale -e PSCALE_ALLOW_NONINTERACTIVE_SHELL=true --user $(id -u):$(id -g) --rm -i $tty planetscale/pscale:${PSCALE_VERSION:-"latest"} $@ --name test"
+        command="docker run --name test -e PLANETSCALE_SERVICE_TOKEN=${PLANETSCALE_SERVICE_TOKEN:-""} -e PLANETSCALE_SERVICE_TOKEN_ID=$PLANETSCALE_SERVICE_TOKEN_ID -e PLANETSCALE_SERVICE_TOKEN_NAME=$PLANETSCALE_SERVICE_TOKEN_NAME -e HOME=/tmp -v $HOME/.config/planetscale:/tmp/.config/planetscale -e PSCALE_ALLOW_NONINTERACTIVE_SHELL=true --user $(id -u):$(id -g) --rm -i $tty planetscale/pscale:${PSCALE_VERSION:-"latest"} $@"
         command2="docker cp /tmp test:/tmp"
         eval $command2
     fi
