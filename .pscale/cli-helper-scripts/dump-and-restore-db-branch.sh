@@ -2,5 +2,5 @@
 
 tmpfolder="/tmp/main"
 pscale database dump "$DB_NAME" "main" --org "$ORG_NAME" --output $tmpfolder
-. use-pscale-docker-image.sh
-pscale database restore-dump  "$DB_NAME" "$BRANCH_NAME" --overwrite-tables --org "$ORG_NAME" --dir $tmpfolder
+cp -a /tmp/main/. $HOME
+pscale database restore-dump  "$DB_NAME" "$BRANCH_NAME" --overwrite-tables --org "$ORG_NAME" --dir $HOME
