@@ -241,6 +241,12 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: Get Pull Request Number
+        id: pr
+        run: echo "::set-output name=BRANCH_NAME::$(gh pr view --json number -q .number || echo "")"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create deployment request
         if: ${{ github.ref == 'refs/heads/dev' }} && startsWith(github.ref, 'refs/tags/db') == true
         id: create-dr
@@ -251,7 +257,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ github.event.pull_request.base.ref }}
+          BRANCH_NAME: pr-${{ env.BRANCH_NAME }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
