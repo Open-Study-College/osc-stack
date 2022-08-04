@@ -227,6 +227,10 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: Set Branch Name
+        run: |
+          echo "::set-env name=BRANCH_NAME::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
+
       - name: Create deployment request
         if: ${{ github.ref == 'refs/heads/dev' }}
         id: create-dr
@@ -237,7 +241,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ github.event.number }}
+          BRANCH_NAME: pr-${{ env.BRANCH_NAME }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
