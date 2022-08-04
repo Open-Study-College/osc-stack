@@ -237,7 +237,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ github.ref_name }}
+          BRANCH_NAME: pr-${{ github.event.pull_request.base.ref }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
