@@ -105,11 +105,8 @@ jobs:
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
 
-      - name: setup Schema
+      - name: Setup Schema
         run: npx prisma db push
-
-      - name: ⚙️ Build
-        run: npm run build
 
       - name: 🌳 Cypress run
         uses: cypress-io/github-action@v3
