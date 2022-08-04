@@ -11,6 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { withEmotionCache } from "@emotion/react";
@@ -73,10 +74,13 @@ const Document = withEmotionCache(
 );
 
 export default function App() {
+
+  const { user } = useLoaderData();
+
   return (
     <Document>
       <ChakraProvider>
-        <h1>random change</h1>
+        <h1>{user?.name}</h1>
         <Outlet />
       </ChakraProvider>
     </Document>
