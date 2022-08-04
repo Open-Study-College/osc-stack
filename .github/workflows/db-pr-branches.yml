@@ -14,37 +14,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/db') == false
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
-        id: extract_branch
-
-      - name: Validate parameters
-        id: validate_params
-        uses: actions/github-script@v3
-        env:
-          BRANCH_NAME: ${{ github.event.inputs.branch }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const branch_name = process.env.BRANCH_NAME || "${{steps.extract_branch.outputs.branch}}";
-
-            const regex = /[^\/]+$/;
-            let clean_branch_name;
-                       
-            if (branch_name.match(regex)) {
-              clean_branch_name = branch_name.match(regex)[0];
-            } else {
-              clean_branch_name = branch_name;
-            }
-
-            if (! /^[a-zA-Z0-9_-]+$/.test(clean_branch_name)) {
-              const error = `The branch name contains illegal characters: ${clean_branch_name}`;
-              core.error(error);
-              core.setFailed(error);
-            }
-            core.setOutput('branch_name', clean_branch_name);
-
       - name: Checkout
         uses: actions/checkout@v2
 
