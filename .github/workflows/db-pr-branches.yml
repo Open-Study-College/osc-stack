@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set branch name
+        run: echo ::set-output name=BRANCH_NAME::${GITHUB_REF#refs/*/}
+
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
@@ -26,7 +29,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ github.event.number }}
+          BRANCH_NAME: ${{ env.BRANCH_NAME }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
