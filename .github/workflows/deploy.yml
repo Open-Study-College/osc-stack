@@ -103,7 +103,7 @@ jobs:
           useLockFile: false
 
       - name: Setup Schema
-        run: npx prisma db push
+        run: npx prisma db push --accept-data-loss
 
       - name: ⚙️ Build
         run: npm run build
