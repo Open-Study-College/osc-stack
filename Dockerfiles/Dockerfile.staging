@@ -39,7 +39,7 @@ RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
-ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://ktvntxkiw4pe:pscale_pw_hWbp-N2NgV2mq0kMroNCNOL_p0QoQ_sJGikDCd1ocLs@i1e861bbhqwa.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://qlh27ajyekfz:pscale_pw_tSmiwsrMfXfv0qvaDHRWv6ZXCwHwjrYeBQqY9PqPJr0@9kti0ramu73w.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 ENV PORT="8080"
 ENV NODE_ENV="production"
 ENV VAPID_PUBLIC_KEY="BNEalBKv4PPkaCfptTW582JLDjMqQzw6CUM6ZdP3mRMEndhRrkLhtBcwoterpS-n4Bghce1WEPPbVgj-2vOKaxw"
@@ -64,5 +64,7 @@ COPY ./prisma /app/prisma
 
 EXPOSE 3306
 EXPOSE 8080
+
+RUN npx prisma db push --accept-data-loss
 
 CMD ["npm", "start"]
