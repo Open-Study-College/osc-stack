@@ -39,16 +39,13 @@ RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
-
-ENV DATABASE_URL=file:/data/sqlite.db
 ENV PORT="8080"
 ENV NODE_ENV="production"
-ENV VAPID_PUBLIC_KEY="BNEalBKv4PPkaCfptTW582JLDjMqQzw6CUM6ZdP3mRMEndhRrkLhtBcwoterpS-n4Bghce1WEPPbVgj-2vOKaxw"
-ENV VAPID_PRIVATE_KEY="J6XOwjUQ9qLZpu8WC_srpcoisPTaSSyJE_FpFCI01ng"
-
+ARG MY_DB_URL
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}?sslaccept=strict&sslcert=./cacert.pem"
 
 # add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
+RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 
@@ -57,6 +54,15 @@ COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
+
 ADD . .
 
-CMD ["npm", "start"]
+RUN mkdir -p prisma
+COPY ./prisma /app/prisma
+
+EXPOSE 3306
+EXPOSE 8080
+
+# fix pre-existing schema problem
+RUN npx prisma db push --accept-data-loss
+CMD cross-env npm start

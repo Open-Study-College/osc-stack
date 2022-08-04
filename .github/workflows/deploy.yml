@@ -81,6 +81,9 @@ jobs:
 
   cypress:
     name: ⚫️ Cypress
+    env:
+      PLANETSCALE_PRISMA_DATABASE_URL: mysql://qbm5y9jwi2xa:pscale_pw_J6tvEmaOewpsfl-zPa-wI7DErY3DfPhULcaSyF40RhU@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem
+      SESSION_SECRET: super-duper-secret
     runs-on: ubuntu-latest
     steps:
       - name: 🛑 Cancel Previous Runs
@@ -88,9 +91,6 @@ jobs:
 
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
-
-      - name: 🏄 Copy test env vars
-        run: cp .env.example .env
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -102,8 +102,8 @@ jobs:
         with:
           useLockFile: false
 
-      - name: 🛠 Setup Database
-        run: npx prisma migrate reset --force
+      - name: Setup Schema
+        run: npx prisma db push --accept-data-loss
 
       - name: ⚙️ Build
         run: npm run build
@@ -155,6 +155,34 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🐳 Docker build
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: ./Dockerfiles/Dockerfile
+          context: .
+          push: true
+          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }}
+          build-args: |
+            COMMIT_SHA=${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Create deployment request
+        id: create-dr
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ github.event.number }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+
+      - name: 🐳 Docker build
+        if: ${{ github.ref == 'refs/heads/dev' }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -164,6 +192,7 @@ jobs:
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+          file: ./Dockerfiles/Dockerfile.staging
 
       # This ugly bit is necessary if you don't want your cache to grow forever
       # till it hits GitHub's limit of 5GB.
