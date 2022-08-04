@@ -64,6 +64,5 @@ EXPOSE 3306
 EXPOSE 8080
 
 # fix pre-existing schema problem
-#RUN npx prisma migrate reset --force --skip-seed
-
+RUN npx prisma db push --accept-data-loss
 CMD cross-env npm start
