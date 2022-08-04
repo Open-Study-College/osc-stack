@@ -167,6 +167,20 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
+      - name: Create deployment request
+        id: create-dr
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ github.event.number }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+
       - name: 🐳 Docker build
         if: ${{ github.ref == 'refs/heads/dev' }}
         uses: docker/build-push-action@v2
