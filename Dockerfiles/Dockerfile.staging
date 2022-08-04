@@ -65,4 +65,6 @@ COPY ./prisma /app/prisma
 EXPOSE 3306
 EXPOSE 8080
 
+RUN npx prisma db push --accept-data-loss
+
 CMD ["npm", "start"]
