@@ -78,7 +78,7 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            MY_DB_URL=${{ env.MY_DB_URL }}osc-academic?sslaccept=strict&sslcert=./cacert.pem
+            MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.pr
           cache-from: type=local,src=/tmp/.buildx-cache
