@@ -167,6 +167,20 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
+      - name: Create deployment request
+        id: create-dr
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ github.event.number }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+
       - name: 🐳 Docker build
         if: ${{ github.ref == 'refs/heads/dev' }}
         uses: docker/build-push-action@v2
@@ -227,10 +241,6 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Set Branch Name
-        if: ${{ github.ref == 'refs/heads/dev' }} && startsWith(github.ref, 'refs/tags/db') == true
-        run: echo ::set-output name=BRANCH_NAME::${GITHUB_REF#refs/*/}
-
       - name: Create deployment request
         if: ${{ github.ref == 'refs/heads/dev' }} && startsWith(github.ref, 'refs/tags/db') == true
         id: create-dr
@@ -241,7 +251,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: ${{ env.BRANCH_NAME }}
+          BRANCH_NAME: pr-${{ github.event.pull_request.base.ref }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
