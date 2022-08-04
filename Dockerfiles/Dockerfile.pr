@@ -43,7 +43,6 @@ ENV PORT="8080"
 ENV NODE_ENV="production"
 ARG MY_DB_URL
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}?sslaccept=strict&sslcert=./cacert.pem"
-ENV PLANETSCALE_PRISMA_SHADOW_DATABASE_URL='mysql://vpvera777wzu:pscale_pw_N1eIPbswL1jdPMbsIG11jWNtbC_hJW4Sjk4Lw0-mlio@j0997qjw37o4.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
