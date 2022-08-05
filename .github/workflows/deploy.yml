@@ -123,13 +123,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request Number
-      - uses: jwalton/gh-find-current-pr@v1
+        uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Echo Pull Request Number and set as env
-      - run: echo "Your PR is ${PR}"
+        run: echo "Your PR is ${PR}"
         if: success() && steps.findPr.outputs.number
         env:
           BRANCH_NAME: ${{ steps.findPr.outputs.pr }}
