@@ -128,7 +128,6 @@ jobs:
         id: findPr
         with:
           state: all
-        run: echo "Your PR is ${PR}"
         if: success() && steps.findPr.outputs.number
         env:
           BRANCH_NAME: ${{ steps.findPr.outputs.pr }}
