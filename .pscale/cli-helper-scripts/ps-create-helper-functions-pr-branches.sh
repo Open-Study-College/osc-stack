@@ -186,27 +186,9 @@ function create-deployment {
     local ORG_NAME=$2
     local deploy_request_number=$3
 
-    local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
-    # if CI variable is set, export the deploy request parameters
-    echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
-    echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-    export DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER
-    echo "DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER" >> $GITHUB_ENV
-
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
-    pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
-    # only ask for user input if CI variabe is not set
-    if [ -z "$CI" ]; then
-        read -p "Do you want to deploy this deployment request? [y/N] " -n 1 -r
-        echo
-        if ! [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "Deployment request $deploy_request_number was not deployed."
-            exit 1
-        fi
-    else
-        create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
-    fi
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
 
     pscale deploy-request deploy "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
     # check return code, if not 0 then error
