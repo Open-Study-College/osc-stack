@@ -126,6 +126,7 @@ jobs:
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
+          sha: ${{ github.event.pull_request.head.sha }}
           state: all
 
       - name: Echo Pull Request Number and set as env
