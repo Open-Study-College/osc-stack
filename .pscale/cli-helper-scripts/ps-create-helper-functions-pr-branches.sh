@@ -67,11 +67,9 @@ function create-deploy-request {
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     echo "Check out the deploy request created at $deploy_request"
     # if CI variable is set, export the deploy request URL
-    if [ -n "$CI" ]; then
-        echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
-        echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-        create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
-    fi   
+    echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
+    echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME" `
 }
 
 function create-deploy-request-info {
