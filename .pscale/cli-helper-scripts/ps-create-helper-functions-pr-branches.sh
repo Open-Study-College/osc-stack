@@ -190,10 +190,10 @@ function create-deployment {
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     # if CI variable is set, export the deploy request parameters
-    if [ -n "$CI" ]; then
-        echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
-        echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-    fi
+    echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
+    echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
+    export DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER
+    echo "DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER" >> $GITHUB_ENV
 
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
