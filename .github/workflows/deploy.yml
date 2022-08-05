@@ -128,9 +128,6 @@ jobs:
         id: findPr
         with:
           state: all
-        if: success() && steps.findPr.outputs.number
-        env:
-          BRANCH_NAME: ${{ steps.findPr.outputs.pr }}
 
       - name: Create deployment request
         if: ${{ github.ref == 'refs/heads/dev' }} && startsWith(github.ref, 'refs/tags/db') == true
@@ -142,7 +139,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ env.BRANCH_NAME }}
+          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
