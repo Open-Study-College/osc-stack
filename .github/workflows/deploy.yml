@@ -129,6 +129,12 @@ jobs:
         with:
           state: all
 
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
       - name: Create deployment request
         if: ${{ github.ref == 'refs/heads/dev' }} && startsWith(github.ref, 'refs/tags/db') == true
         id: create-dr
@@ -143,12 +149,6 @@ jobs:
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
-
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
 
       - name: 👀 Read app name
         uses: SebRollen/toml-action@v1.0.0
