@@ -10,9 +10,12 @@ env:
 jobs:
   build:
     name: 🐳 Build PR Branch
-    if: ${{ (startsWith(github.event.pull_request.title, 'refs/tags/db') == true || startsWith(github.event.pull_request.title, 'refs/tags/Db') == true) }}
+    if: ${{ (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
     runs-on: ubuntu-latest
     steps:
+      - name: echo pr title
+        run: echo ${{ github.head_ref }}
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
