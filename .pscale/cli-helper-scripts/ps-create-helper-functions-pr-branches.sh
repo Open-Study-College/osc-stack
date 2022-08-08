@@ -65,9 +65,6 @@ function create-deploy-request {
     fi
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
-    echo "Check out the deploy request created at $deploy_request"
-    # if CI variable is set, export the deploy request URL
-    echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
     export DEPLOY_REQUEST_NUMBER=$deploy_request_number
@@ -192,7 +189,7 @@ function create-deployment {
 
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER" "$BRANCH_NAME"
 
-    ./.pscale/cli-helper-scripts/wait_for_deploy_request_merged.sh 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
         echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
         echo "Check out the deploy request status at $deploy_request"
@@ -208,7 +205,7 @@ function create-deployment {
         exit 1
     fi
 
-    ./.pscale/cli-helper-scripts/wait_for_deploy_request_merged/wait_for_deploy_request_merged.sh 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
         echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
         echo "Check out the deploy request status at $deploy_request"
