@@ -92,6 +92,29 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      # remove dr step from here
+      - name: Get Pull Request Number
+        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: all
+
+      - name: Create and merge deployment request
+        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        id: create-dr
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
@@ -219,27 +242,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Get Pull Request Number
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
-
-      - name: Create and merge deployment request
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
-        id: create-dr
-        timeout-minutes: 3
-        env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-          ORG_NAME: ${{secrets.ORG_NAME}}
-          DB_NAME: ${{secrets.DB_NAME}}
-          GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
-          DIR: /migrationTmpData
-        run: |
-          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+      # insert dr step here
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
