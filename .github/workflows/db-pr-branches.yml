@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     name: Create database branch
-    if: ${{ github.ref != 'refs/heads/main' && (startsWith(github.ref, 'refs/tags/db') == false || startsWith(github.ref, 'refs/tags/Db') == false) }}
+    if: ${{ github.ref != 'refs/heads/main' && (startsWith(github.event.pull_request.title, 'refs/tags/db') == false || startsWith(github.event.pull_request.title, 'refs/tags/Db') == false) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
