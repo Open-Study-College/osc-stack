@@ -1,8 +1,15 @@
 #!/bin/bash
 
-. .pscale/cli-helper-scripts/use-pscale-docker-image.sh
-. .pscale/cli-helper-scripts/authenticate-ps.sh
-. .pscale/cli-helper-scripts/wait-for-deploy-request-merged.sh
-. .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
-. .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
-create-deployment "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER"
+. use-pscale-docker-image.sh
+. authenticate-ps.sh
+. wait-for-deploy-request-merged.sh
+. set-db-and-org-and-branch-name.sh
+. ps-create-helper-functions.sh
+
+# if no parameter was passed, display usage
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <deploy request id>"
+    exit 1
+fi
+
+create-deployment "$DB_NAME" "$ORG_NAME" "$1"

@@ -12,4 +12,6 @@ DDL_STATEMENTS="$2"
 create-schema-change "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DDL_STATEMENTS"
 create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 
-. .pscale/cli-helper-scripts/merge-deploy-request.sh "$DB_NAME" "$BRANCH_NAME" "$DEPLOY_REQUEST_NUMBER"
+echo $DEPLOY_REQUEST_NUMBER
+
+create-deployment "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER"
