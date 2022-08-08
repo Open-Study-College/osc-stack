@@ -82,7 +82,7 @@ jobs:
   cypress:
     name: ⚫️ Cypress
     env:
-      PLANETSCALE_PRISMA_DATABASE_URL: mysql://7xc0l0rrnjsw:pscale_pw_wzlLK_oaPmvvvNLZY9FH-ZO-2-dASA2xdtd5pXsoee0@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem
+      PLANETSCALE_PRISMA_DATABASE_URL: "mysql://ql5abmy7lnfn:pscale_pw_S8TJXvCgOE3CoCbPr2TZdNVbO2c5Vt1Hde-lq572I5w@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
       SESSION_SECRET: super-duper-secret
     runs-on: ubuntu-latest
     steps:
