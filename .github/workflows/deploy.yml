@@ -82,7 +82,7 @@ jobs:
   cypress:
     name: ⚫️ Cypress
     env:
-      PLANETSCALE_PRISMA_DATABASE_URL: mysql://qbm5y9jwi2xa:pscale_pw_J6tvEmaOewpsfl-zPa-wI7DErY3DfPhULcaSyF40RhU@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem
+      PLANETSCALE_PRISMA_DATABASE_URL: "mysql://ql5abmy7lnfn:pscale_pw_S8TJXvCgOE3CoCbPr2TZdNVbO2c5Vt1Hde-lq572I5w@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
       SESSION_SECRET: super-duper-secret
     runs-on: ubuntu-latest
     steps:
@@ -220,14 +220,14 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Get Pull Request Number
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.event.pull_request.title, 'refs/tags/db') == true || startsWith(github.event.pull_request.title, 'refs/tags/Db') == true) }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create and merge deployment request
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.event.pull_request.title, 'refs/tags/db') == true || startsWith(github.event.pull_request.title, 'refs/tags/Db') == true) }}
         id: create-dr
         timeout-minutes: 3
         env:
@@ -237,7 +237,6 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
-          DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
 
