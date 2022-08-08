@@ -195,7 +195,8 @@ function create-deployment {
     pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
     # check return code, if not 0 then error
     if [ $? -ne 0 ]; then
-        echo "Error: pscale deploy-request deploy returned non-zero exit code, this might be becuase the schema is identical"
+        echo "Error: pscale deploy-request deploy returned non-zero exit code"
+        exit 1
     fi
 
     wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
