@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: 🐳 Build PR Branch
-    if: ${{ (startsWith(github.event.pull_request.title, 'refs/tags/db') == true || startsWith(github.event.pull_request.title, 'refs/tags/Db') == true) }}
+    if: ${{ (startsWith(github.event.pull_request.title, 'refs/tags/db') == false || startsWith(github.event.pull_request.title, 'refs/tags/Db') == false ) }}
     runs-on: ubuntu-latest
     steps:
       - name: 🛑 Cancel Previous Runs
