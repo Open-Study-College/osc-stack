@@ -13,7 +13,7 @@ jobs:
     if: ${{ (!startsWith(github.event.pull_request.title, 'db') || !startsWith(github.event.pull_request.title, 'Db') ) }}
     runs-on: ubuntu-latest
     steps:
-        name: echo pr title
+      - name: echo pr title
         run: echo ${{ github.event.pull_request.title }}
 
       - name: 🛑 Cancel Previous Runs
