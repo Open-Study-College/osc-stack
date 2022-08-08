@@ -82,7 +82,7 @@ jobs:
   cypress:
     name: ⚫️ Cypress
     env:
-      PLANETSCALE_PRISMA_DATABASE_URL: "mysql://tw3nmjtyslp0:pscale_pw__n7MfB1HI6MU3S_mkckAdvez1XA7nkQNkQ3zilq5ci8@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
+      PLANETSCALE_PRISMA_DATABASE_URL: mysql://7xc0l0rrnjsw:pscale_pw_wzlLK_oaPmvvvNLZY9FH-ZO-2-dASA2xdtd5pXsoee0@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem
       SESSION_SECRET: super-duper-secret
     runs-on: ubuntu-latest
     steps:
@@ -127,6 +127,29 @@ jobs:
 
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
+
+      # remove dr step from here
+      - name: Get Pull Request Number
+        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: all
+
+      - name: Create and merge deployment request
+        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        id: create-dr
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
 
       - name: 👀 Read app name
         uses: SebRollen/toml-action@v1.0.0
@@ -218,7 +241,7 @@ jobs:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-staging --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
+          
       - name: Get Pull Request Number
         if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.ref, 'refs/tags/db') == true || startsWith(github.ref, 'refs/tags/Db') == true) }}
         uses: jwalton/gh-find-current-pr@v1
