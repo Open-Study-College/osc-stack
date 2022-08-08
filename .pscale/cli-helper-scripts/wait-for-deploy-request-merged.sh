@@ -1,8 +1,8 @@
 function wait_for_deploy_request_merged {
     local retries=$1
-    local DB_NAME=$2
-    local DEPLOY_REQUEST_NUMBER=$3
-    local ORG_NAME=$4
+    local db=$2
+    local number=$3
+    local org=$4
     
     # check whether fifth parameter is set, otherwise use default value
     if [ -z "$5" ]; then
@@ -14,15 +14,15 @@ function wait_for_deploy_request_merged {
     local count=0
     local wait=1
 
-    echo "Checking if deploy request $DEPLOY_REQUEST_NUMBER is ready for use..."
+    echo "Checking if deploy request $number is ready for use..."
     while true; do
-        local raw_output=`pscale deploy-request list "$DB_NAME" --org "$ORG_NAME" --format json`
+        local raw_output=`pscale deploy-request list "$db" --org "$org" --format json`
         # check return code, if not 0 then error
         if [ $? -ne 0 ]; then
             echo "Error: pscale deploy-request list returned non-zero exit code $?: $raw_output"
             return 1
         fi
-        local output=`echo $raw_output | jq ".[] | select(.number == $DEPLOY_REQUEST_NUMBER) | .deployment.state"`
+        local output=`echo $raw_output | jq ".[] | select(.number == $number) | .deployment.state"`
         # test whether output is pending, if so, increase wait timeout exponentially
         if [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
             # increase wait variable exponentially but only if it is less than max_timeout
@@ -34,18 +34,18 @@ function wait_for_deploy_request_merged {
 
             count=$((count+1))
             if [ $count -ge $retries ]; then
-                echo  "Deploy request $DEPLOY_REQUEST_NUMBER is not ready after $retries retries. Exiting..."
+                echo  "Deploy request $number is not ready after $retries retries. Exiting..."
                 return 2
             fi
-            echo  "Deploy-request $DEPLOY_REQUEST_NUMBER is not deployed yet. Current status:"
-            echo "show vitess_migrations\G" | pscale shell "$DB_NAME" main --org "$ORG_NAME"
+            echo  "Deploy-request $number is not deployed yet. Current status:"
+            echo "show vitess_migrations\G" | pscale shell "$db" main --org "$org"
             echo "Retrying in $wait seconds..."
             sleep $wait
         elif [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
-            echo  "Deploy-request $DEPLOY_REQUEST_NUMBER has been deployed successfully."
+            echo  "Deploy-request $number has been deployed successfully."
             return 0
         else
-            echo  "Deploy-request $DEPLOY_REQUEST_NUMBER with unknown status: $output"
+            echo  "Deploy-request $number with unknown status: $output"
             return 3
         fi
     done
