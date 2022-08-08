@@ -219,11 +219,10 @@ function wait_for_deploy_request_merged {
                 echo  "Deploy request $number is not ready after $retries retries. Exiting..."
                 return 2
             fi
-            echo  "Deploy-request $number is not deployed yet. Current status:"
-            echo "show vitess_migrations\G" | pscale shell "$db" main --org "$org"
+            echo  "Deploy-request $number is not deployed yet."
             echo "Retrying in $wait seconds..."
             sleep $wait
-        elif [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
+        elif [ "$output" = "\"ready\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
             echo  "Deploy-request $number has been deployed successfully."
             return 0
         else
