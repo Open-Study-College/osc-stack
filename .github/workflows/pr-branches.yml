@@ -9,6 +9,10 @@ env:
 
 jobs:
   build:
+
+    name: echo pr title
+    run: echo ${{ github.event.pull_request.title }}
+
     name: 🐳 Build PR Branch
     if: ${{ (!startsWith(github.event.pull_request.title, 'db') || !startsWith(github.event.pull_request.title, 'Db') ) }}
     runs-on: ubuntu-latest
