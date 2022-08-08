@@ -70,8 +70,8 @@ function create-deploy-request {
     echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
-    export DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER
-    echo "DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER" >> $GITHUB_ENV
+    export DEPLOY_REQUEST_NUMBER=$deploy_request_number
+    echo "DEPLOY_REQUEST_NUMBER=$deploy_request_number" >> $GITHUB_ENV
 }
 
 function create-deploy-request-info {
@@ -186,20 +186,20 @@ function create-diff-for-ci {
 function create-deployment {
     local DB_NAME=$1
     local ORG_NAME=$2
-    local deploy_request_number=$3
+    local DEPLOY_REQUEST_NUMBER=$3
 
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
-    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER" "$BRANCH_NAME"
 
-    pscale deploy-request deploy "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
+    pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
     # check return code, if not 0 then error
     if [ $? -ne 0 ]; then
         echo "Error: pscale deploy-request deploy returned non-zero exit code"
         exit 1
     fi
 
-    wait_for_deploy_request_merged 9 "$DB_NAME" "$deploy_request_number" "$ORG_NAME" 60
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
         echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
         echo "Check out the deploy request status at $deploy_request"
