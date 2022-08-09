@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: 🐳 Build PR Branch
-    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/release' && github.ref != 'refs/heads/staging' && (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
+    if: ${{ github.base_ref != 'refs/heads/main' && github.base_ref != 'refs/heads/release' && github.base_ref != 'refs/heads/staging' && (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
     runs-on: ubuntu-latest
     steps:
       - name: echo pr title
