@@ -1,25 +1,21 @@
 name: 🚀 Deploy
 on:
-  push:
-    branches:
-      - main
-      - release
-      - staging
+  pull_request:
+    types: [closed]
 permissions:
   actions: write
   contents: read
 
 jobs:
   lint:
-    permissions: write-all
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: Get Pull Request Number
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
+      - name: echo merge-base
+        uses: rmacklin/fetch-through-merge-base@v0
         with:
-          state: all
+          base_ref: main
+          head_ref: staging
 
       - name: echo github.head_ref
         run: echo ${{ github.head_ref }}
@@ -217,7 +213,6 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy:
-    permissions: write-all
     name: 🚀 Deploy
     runs-on: ubuntu-latest
     needs: [lint, typecheck, vitest, cypress, build]
