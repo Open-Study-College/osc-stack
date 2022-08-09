@@ -11,7 +11,10 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: echo pr title
+      - name: echo github.head_ref
+        run: echo ${{ github.head_ref }}
+
+      - name: echo github.base_ref
         run: echo ${{ github.head_ref }}
 
       - name: 🛑 Cancel Previous Runs
@@ -154,7 +157,7 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: 🐳 Docker build
+      - name: 🐳 Docker build main
         if: ${{ github.base_ref == 'release' && github.head_ref == 'main'}}
         uses: docker/build-push-action@v2
         with:
@@ -167,7 +170,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
-      - name: 🐳 Docker build
+      - name: 🐳 Docker build release
         if: ${{ github.base_ref == 'staging' && github.head_ref == 'release' }}
         uses: docker/build-push-action@v2
         with:
@@ -180,7 +183,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           file: ./Dockerfiles/Dockerfile.release
 
-      - name: 🐳 Docker build
+      - name: 🐳 Docker build staging
         if: ${{ github.head_ref == 'staging' }}
         uses: docker/build-push-action@v2
         with:
