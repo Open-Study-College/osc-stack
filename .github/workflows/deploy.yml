@@ -2,6 +2,7 @@ name: 🚀 Deploy
 on:
   pull_request:
     types: [closed]
+  push: {}
 permissions:
   actions: write
   contents: read
@@ -11,6 +12,13 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
+      - name: Get Pull Request Number
+        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: all
+
       - name: echo github.head_ref
         run: echo ${{ github.head_ref }}
 
