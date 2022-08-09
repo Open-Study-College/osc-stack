@@ -14,8 +14,8 @@ jobs:
       - name: echo merge-base
         uses: rmacklin/fetch-through-merge-base@v0
         with:
-          base_ref: main
-          head_ref: staging
+          base_ref: ${{ github.base_ref }}
+          head_ref: ${{ github.head_ref }}
 
       - name: echo github.head_ref
         run: echo ${{ github.head_ref }}
