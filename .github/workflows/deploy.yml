@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request Number
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
