@@ -182,10 +182,6 @@ function create-diff-for-ci {
 }
 
 function create-deployment {
-    local DB_NAME=$1
-    local ORG_NAME=$2
-    local deploy_request_number=$3
-
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
@@ -205,5 +201,7 @@ function create-deployment {
     else
         echo "Check out the deploy request at $deploy_request"
     fi
+
+    pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME"
 
 }
