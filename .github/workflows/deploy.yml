@@ -5,7 +5,8 @@ on:
       - main
       - release
       - staging
-    pull_request: {}
+  pull_request:
+    types: [opened, reopened, synchronize]
 permissions:
   actions: write
   contents: read
