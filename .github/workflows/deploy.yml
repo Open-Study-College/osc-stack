@@ -1,8 +1,10 @@
 name: 🚀 Deploy
 on:
-  pull_request:
-    types: [closed]
-  push: {}
+  push:
+    branches:
+      - main
+      - release
+      - staging
 permissions:
   actions: write
   contents: read
@@ -256,6 +258,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      # get a list of all open branches
       - name: Get Pull Request Number
         if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
