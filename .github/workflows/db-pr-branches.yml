@@ -10,8 +10,8 @@ env:
 
 jobs:
   build:
-    name: Create database branch
-    if: startsWith(github.ref, 'refs/tags/db') == false
+    name: Build database branch and pr branch
+    if: ${{ github.ref != 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -80,7 +80,7 @@ jobs:
           build-args: |
             MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
-          file: ./Dockerfiles/Dockerfile.pr
+          file: ./Dockerfiles/Dockerfile.db-pr
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 

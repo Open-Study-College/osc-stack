@@ -13,7 +13,7 @@ npx create-remix --template remix-run/indie-stack
 -   [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
 -   Production-ready [SQLite Database](https://sqlite.org)
 -   Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
--   [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging environments
+-   [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging and release environments
 -   Email/Password Authentication with [cookie-based sessions](https://remix.run/docs/en/v1/api/remix#createcookiesessionstorage)
 -   Database ORM with [Prisma](https://prisma.io)
 -   Styling with [Charka && SCSS](https://chakra-ui.com/)(https://sass-lang.com/)
@@ -63,7 +63,7 @@ This is a pretty simple note-taking app, but it's a good example of how you can 
 
 ## Deployment
 
-This Remix Stack comes with two GitHub Actions that handle automatically deploying your app to production and staging environments.
+This Remix Stack comes with two GitHub Actions that handle automatically deploying your app to production and staging and release environments.
 
 Prior to your first deployment, you'll need to do a few things:
 
@@ -77,7 +77,7 @@ Prior to your first deployment, you'll need to do a few things:
 
     > **Note:** If you have more than one Fly account, ensure that you are signed into the same account in the Fly CLI as you are in the browser. In your terminal, run `fly auth whoami` and ensure the email matches the Fly account signed into the browser.
 
--   Create two apps on Fly, one for staging and one for production:
+-   Create three apps on Fly, one for staging and one for release and one for production:
 
     ```sh
     fly create osc-stack
@@ -103,18 +103,20 @@ Prior to your first deployment, you'll need to do a few things:
     ```sh
     fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app osc-stack
     fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app osc-stack-staging
+    fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app osc-stack-release
     ```
 
     If you don't have openssl installed, you can also use [1password](https://1password.com/password-generator/) to generate a random secret, just replace `$(openssl rand -hex 32)` with the generated secret.
 
--   Create a persistent volume for the sqlite database for both your staging and production environments. Run the following:
+-   Create a persistent volume for the sqlite database for both your staging and production and release environments. Run the following:
 
     ```sh
     fly volumes create data --size 1 --app osc-stack
     fly volumes create data --size 1 --app osc-stack-staging
+    fly volumes create data --size 1 --app osc-stack-release
     ```
 
-Now that everything is set up you can commit and push your changes to your repo. Every commit to your `main` branch will trigger a deployment to your production environment, and every commit to your `dev` branch will trigger a deployment to your staging environment.
+Now that everything is set up you can commit and push your changes to your repo. Every commit to your `main` branch will trigger a deployment to your production environment, and every commit to your `dev` branch will trigger a deployment to your staging environment and every commit to your `release` branch will trigger a deployment to your release enviroment
 
 -   When cloning the repo, do not forget to run the "flyctl auth token" and place the value iinside github secrets for ci/cd to work (FLY_API_TOKEN), furthermore, you should create (CHROMATIC_PROJECT_TOKEN) by starting a new project in chromatic and place it inside github secrets, finally, create a FLY_PR_BRANCH_SESSION_SECRET (any value) and place it inside github secrets
 
