@@ -1,7 +1,7 @@
 name: 🚀 Deploy
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [closed]
 permissions:
   actions: write
   contents: read
