@@ -5,6 +5,7 @@ on:
       - main
       - release
       - staging
+    pull_request: {}
 permissions:
   actions: write
   contents: read
