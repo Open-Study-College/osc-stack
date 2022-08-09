@@ -27,7 +27,7 @@ jobs:
           file: "fly.toml"
           field: "app"
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions@1.1
         continue-on-error: true
       - run: flyctl apps destroy pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }} -y
         env:
