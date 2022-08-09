@@ -11,6 +11,9 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
+      - name: activate merge-base
+        uses: rmacklin/fetch-through-merge-base@v0
+
       - name: Find common ancestor
         env:
           BASE_BRANCH: ${{ github.base_ref }}
