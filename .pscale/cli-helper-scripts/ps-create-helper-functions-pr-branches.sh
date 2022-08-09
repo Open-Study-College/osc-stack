@@ -233,10 +233,6 @@ function wait_for_deploy_request_merged {
 }
 
 function create-deployment {
-    local DB_NAME=$1
-    local ORG_NAME=$2
-    local DEPLOY_REQUEST_NUMBER=$3
-
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER" "$BRANCH_NAME"
@@ -265,5 +261,7 @@ function create-deployment {
     else
         echo "Check out the deploy request at $deploy_request"
     fi
+
+    pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME"
 
 }
