@@ -80,7 +80,7 @@ jobs:
           build-args: |
             MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
-          file: ./Dockerfiles/Dockerfile.pr
+          file: ./Dockerfiles/Dockerfile.db-pr
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
