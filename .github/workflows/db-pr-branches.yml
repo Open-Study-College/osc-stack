@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     name: Build database branch and pr branch
-    if: ${{ github.base_ref != 'refs/heads/main' && github.base_ref != 'refs/heads/release' && github.base_ref != 'refs/heads/staging' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
+    if: ${{ github.base_ref != 'main' && github.base_ref != 'release' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
