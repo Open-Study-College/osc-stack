@@ -249,7 +249,7 @@ jobs:
         with:
           state: all
 
-      - name: Create and merge deployment request
+      - name: Create and merge deployment request && delete db branch
         if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
         id: create-dr
         timeout-minutes: 3
