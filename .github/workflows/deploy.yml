@@ -243,14 +243,14 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           
       - name: Get Pull Request Number
-        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.ref, 'refs/tags/db') == true || startsWith(github.ref, 'refs/tags/Db') == true) }}
+        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create and merge deployment request
-        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.ref, 'refs/tags/db') == true || startsWith(github.ref, 'refs/tags/Db') == true) }}
+        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
         id: create-dr
         timeout-minutes: 3
         env:
