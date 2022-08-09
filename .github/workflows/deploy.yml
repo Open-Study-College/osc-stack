@@ -119,7 +119,7 @@ jobs:
   build:
     name: 🐳 Build
     # only build/deploy main branch on pushes
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'|| github.ref == 'refs/heads/release') && github.event_name == 'push' }}
+    if: ${{ (github.base_ref == 'main' || github.base_ref == 'staging'|| github.base_ref == 'release') && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🛑 Cancel Previous Runs
@@ -130,14 +130,14 @@ jobs:
 
       # remove dr step from here
       - name: Get Pull Request Number
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'db') == true }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create and merge deployment request
-        if: ${{ github.ref == 'refs/heads/main' && startsWith(github.ref, 'refs/tags/db') == true }}
+        if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'db') == true }}
         id: create-dr
         timeout-minutes: 3
         env:
@@ -178,7 +178,7 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🐳 Docker build
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.base_ref == 'main' }}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
@@ -191,7 +191,7 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: 🐳 Docker build
-        if: ${{ github.ref == 'refs/heads/release' }}
+        if: ${{ github.base_ref == 'release' }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -204,7 +204,7 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build
-        if: ${{ github.ref == 'refs/heads/staging' }}
+        if: ${{ github.base_ref == 'staging' }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -231,7 +231,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, typecheck, vitest, cypress, build]
     # only build/deploy main branch on pushes
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'|| github.ref == 'refs/heads/release') && github.event_name == 'push' }}
+    if: ${{ (github.base_ref == 'main' || github.base_ref == 'staging'|| github.base_ref == 'release') && github.event_name == 'push' }}
 
     steps:
       - name: 🛑 Cancel Previous Runs
@@ -248,7 +248,7 @@ jobs:
           field: "app"
 
       - name: 🚀 Deploy Staging
-        if: ${{ github.ref == 'refs/heads/staging' }}
+        if: ${{ github.base_ref == 'staging' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-staging --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }}"
@@ -256,7 +256,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Release
-        if: ${{ github.ref == 'refs/heads/release' }}
+        if: ${{ github.base_ref == 'release' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }}"
@@ -264,14 +264,14 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Get Pull Request Number
-        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
+        if: ${{ github.base_ref == 'main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create and merge deployment request && delete db branch
-        if: ${{ github.ref == 'refs/heads/main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
+        if: ${{ github.base_ref == 'main' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
         id: create-dr
         timeout-minutes: 3
         env:
@@ -285,7 +285,7 @@ jobs:
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
 
       - name: 🚀 Deploy Production
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.base_ref == 'main' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.ref_name }}-${{ github.sha }}"
