@@ -1,9 +1,8 @@
-name: Main App
+name: Destroy staging app
 on:
   pull_request:
     types: [closed]
     branches:
-      - main
       - dev
 
 env:
