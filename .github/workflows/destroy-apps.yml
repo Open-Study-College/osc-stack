@@ -1,10 +1,9 @@
-name: Main App
+name: Destroy staging app
 on:
   pull_request:
     types: [closed]
     branches:
-      - main
-      - dev
+      - staging
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
