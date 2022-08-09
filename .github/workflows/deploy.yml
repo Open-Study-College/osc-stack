@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: activate merge-base
         uses: rmacklin/fetch-through-merge-base@v0
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          HEAD_BRANCH: ${{ github.base_ref }}
+        with:
+          base_ref: origin/$BASE_BRANCH
+          head_ref: origin/$HEAD_BRANCH
 
       - name: Find common ancestor
         env:
