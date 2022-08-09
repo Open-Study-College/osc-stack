@@ -54,6 +54,7 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
+      # file: ./Dockerfiles/Dockerfile.pr
       - name: 🐳 Docker build
         uses: docker/build-push-action@v2
         with:
