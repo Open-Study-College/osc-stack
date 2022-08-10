@@ -279,6 +279,7 @@ jobs:
           state: all
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
         id: create-db-branch
         timeout-minutes: 3
         env:
