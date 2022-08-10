@@ -1,7 +1,6 @@
 name: 🚀 Deploy
 on:
-  pull_request:
-    types: [closed]
+  push: {}
 permissions:
   actions: write
   contents: read
@@ -11,31 +10,24 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: activate merge-base
-        uses: rmacklin/fetch-through-merge-base@v0
-        env:
-          BASE_BRANCH: ${{ github.base_ref }}
-          HEAD_BRANCH: ${{ github.base_ref }}
+      - name: Get Pull Request Number
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
         with:
-          base_ref: origin/$BASE_BRANCH
-          head_ref: origin/$HEAD_BRANCH
-
-      - name: Find common ancestor
-        env:
-          BASE_BRANCH: ${{ github.base_ref }}
-        run: git merge-base --fork-point origin/$BASE_BRANCH
-
-      - name: echo github.head_ref
-        run: echo ${{ github.head_ref }}
-
-      - name: echo github.base_ref
-        run: echo ${{ github.base_ref }}
+          state: all
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
+
+      - name: Find common ancestor
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: git merge-base --fork-point origin/$BASE_BRANCH
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -262,7 +254,6 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # get a list of all open branches
       - name: Get Pull Request Number
         if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
