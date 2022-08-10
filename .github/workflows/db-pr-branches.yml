@@ -1,7 +1,7 @@
 name: PR Branch App (DB version)
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, edited]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
