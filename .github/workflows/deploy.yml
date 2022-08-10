@@ -170,7 +170,7 @@ jobs:
 
       - name: 🐳 Docker build main
         id: docker-build-main
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'  }}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'}}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
@@ -184,7 +184,7 @@ jobs:
 
       - name: 🐳 Docker build release
         id: "docker-build-release"
-        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release'  }}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'false'}}
         uses: docker/build-push-action@v2
         with:
           context: .
