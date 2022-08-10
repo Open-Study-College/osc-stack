@@ -125,7 +125,7 @@ jobs:
   build:
     name: 🐳 Build
     # only build/deploy main branch on pushes
-    if: ${{ (steps.findPr.outputs.title == 'release' && github.ref_name == 'main' || steps.findPr.outputs.title == 'staging' && github.ref_name == 'release' || github.ref_name == 'staging' )}}
+    if: ${{ (github.ref_name == 'main' || github.ref_name == 'release' || github.ref_name == 'staging' )}}
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request Number
