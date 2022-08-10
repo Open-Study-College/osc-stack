@@ -10,6 +10,7 @@ env:
 
 jobs:
   build:
+    permissions: write-all
     name: Build database branch and pr branch
     if: ${{ github.base_ref != 'main' && github.base_ref != 'release' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
