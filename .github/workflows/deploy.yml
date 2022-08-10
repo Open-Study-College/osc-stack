@@ -133,6 +133,7 @@ jobs:
         run: |
           echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
           echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "$HEAD_REF" "$BASE_REF"
           echo "PR_CLOSED=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}" >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
@@ -168,7 +169,8 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🐳 Docker build main
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
+        id: docker-build-main
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'  }}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
@@ -181,7 +183,8 @@ jobs:
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: 🐳 Docker build release
-        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' }}
+        id: "docker-build-release"
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release'  }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -194,7 +197,8 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build staging
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        id: docker-build-staging
+        if: ${{ env.BASE_REF == 'staging'  }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -212,7 +216,7 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: 🚚 Move cache
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED || env.HEAD_REF == 'staging' && env.BASE_REF == 'release' || env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
+        if: steps.docker-build-main.conclusion != 'skipped' && steps.docker-build-release.conclusion != 'skipped' && steps.docker-build-staging.conclusion != 'skipped'
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -247,7 +251,7 @@ jobs:
           field: "app"
 
       - name: 🚀 Deploy Staging
-        if: ${{ env.BASE_REF == 'staging' }}
+        if: ${{ env.BASE_REF == 'staging'  }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-staging --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
@@ -255,7 +259,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Release
-        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' }}
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release'  }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
@@ -263,7 +267,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Production
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'  }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
@@ -272,14 +276,14 @@ jobs:
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'  }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'  }}
         id: create-db-branch
         timeout-minutes: 3
         env:
@@ -295,7 +299,7 @@ jobs:
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - name: Create and merge deployment request && delete db branch
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
         id: create-dr
         timeout-minutes: 3
         env:
