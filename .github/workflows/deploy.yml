@@ -270,6 +270,14 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      # get a list of all open branches
+      - name: Get Pull Request Number
+        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: all
+
       - name: Create and merge deployment request && delete db branch
         if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
         id: create-dr
@@ -280,6 +288,6 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.PR.outputs.number }}
+          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
