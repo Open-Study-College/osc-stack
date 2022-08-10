@@ -1,6 +1,10 @@
 name: 🚀 Deploy
 on:
-  push: {}
+  push:
+    branches:
+      - main
+      - release
+      - staging
 permissions:
   actions: write
   contents: read
