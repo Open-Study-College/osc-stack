@@ -9,6 +9,7 @@ on: push
 # List of jobs
 jobs:
   chromatic-deployment:
+    concurrency: chromatic-${{ github.ref }}
     # Operating System
     runs-on: ubuntu-latest
     # Job steps
