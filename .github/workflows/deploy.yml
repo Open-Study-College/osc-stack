@@ -298,7 +298,7 @@ jobs:
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - name: Create and merge deployment request && delete db branch
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'}}
         id: create-dr
         timeout-minutes: 3
         env:
