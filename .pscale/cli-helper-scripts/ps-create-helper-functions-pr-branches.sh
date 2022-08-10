@@ -266,7 +266,6 @@ function create-deployment {
         exit 5
     else
         echo "Check out the deploy request at $deploy_request"
+        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME"
     fi
-
-    pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME"
 }
