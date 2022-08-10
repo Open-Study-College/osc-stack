@@ -226,8 +226,8 @@ jobs:
 
       - name: Get PR details
         run: |
-          echo '::set-output name=HEAD_REF::${{ fromJSON(steps.PR.outputs.pr).head.ref  }} | sed s/\//\-/g'
-          echo '::set-output name=BASE_REF::${{ fromJSON(steps.PR.outputs.pr).base.ref  }} | sed s/\//\-/g'
+          echo '::set-output name=HEAD_REF::${ fromJSON(steps.PR.outputs.pr).head.ref//\\//}'
+          echo '::set-output name=BASE_REF::${ fromJSON(steps.PR.outputs.pr).base.ref//\\//}'
           echo '::set-output name=PR_CLOSED::${{ steps.PR.outputs.prClosedAt  }}'
 
       - name: 🛑 Cancel Previous Runs
