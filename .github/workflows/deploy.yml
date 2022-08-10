@@ -212,7 +212,7 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: 🚚 Move cache
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED || env.HEAD_REF == 'staging' && env.BASE_REF == 'release' && env.PR_CLOSED || env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED }}
+        if: success()
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -255,7 +255,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Release
-        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' && env.PR_CLOSED == 'true'}}
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' && env.PR_CLOSED == 'true'  == 'true'}}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
@@ -263,7 +263,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Production
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'  == 'true'}}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
