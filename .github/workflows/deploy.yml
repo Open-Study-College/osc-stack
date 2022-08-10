@@ -7,6 +7,7 @@ permissions:
 
 jobs:
   lint:
+    permissions: write-all
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
