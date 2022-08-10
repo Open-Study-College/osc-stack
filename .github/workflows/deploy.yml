@@ -249,12 +249,19 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Get Pull Request Number
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
+      - name: Create database branch
+        id: create-db-branch
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr-${{ github.event.number }}
+          DIR: /migrationTmpData
+        run: |
+          ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - name: Create and merge deployment request && delete db branch
         if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
@@ -266,6 +273,6 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+          BRANCH_NAME: pr-${{ github.event.number }}
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
