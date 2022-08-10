@@ -11,7 +11,7 @@ DDL_STATEMENTS="$2"
 . .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
 
 . .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
-create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
+create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate" "$FROM"
 
 
 . .pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
