@@ -272,7 +272,7 @@ jobs:
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
