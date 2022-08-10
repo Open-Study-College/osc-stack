@@ -1,6 +1,10 @@
 name: 🚀 Deploy
 on:
-  push: {}
+  push:
+    branches:
+      - main
+      - release
+      - staging
 permissions:
   actions: write
   contents: read
@@ -190,7 +194,7 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build staging
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED }}
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -225,8 +229,9 @@ jobs:
 
       - name: Get PR details
         run: |
-          echo "from ${{ env.HEAD_REF }}" | sed 's/\//\-/g'
-          echo "to ${{ env.BASE_REF }}" | sed 's/\//\-/g'
+          echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "PR_CLOSED"=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
