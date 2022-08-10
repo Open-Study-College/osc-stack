@@ -66,9 +66,10 @@ function create-deploy-request {
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     echo "Check out the deploy request created at $deploy_request"
-    # if CI variable is set, export the deploy request URL
     echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
+    export DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER
+    echo "DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER" >> $GITHUB_ENV
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
 }
 
@@ -181,19 +182,79 @@ function create-diff-for-ci {
     fi
 }
 
+function wait_for_deploy_request_merged {
+    local retries=$1
+    local db=$2
+    local number=$3
+    local org=$4
+    
+    # check whether fifth parameter is set, otherwise use default value
+    if [ -z "$5" ]; then
+        local max_timeout=600
+    else
+        local max_timeout=$5
+    fi
+
+    local count=0
+    local wait=1
+
+    echo "Checking if deploy request $number is ready for use..."
+    while true; do
+        local raw_output=`pscale deploy-request list "$db" --org "$org" --format json`
+        # check return code, if not 0 then error
+        if [ $? -ne 0 ]; then
+            echo "Error: pscale deploy-request list returned non-zero exit code $?: $raw_output"
+            return 1
+        fi
+        local output=`echo $raw_output | jq ".[] | select(.number == $number) | .deployment.state"`
+        # test whether output is pending, if so, increase wait timeout exponentially
+        if [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
+            # increase wait variable exponentially but only if it is less than max_timeout
+            if [ $((wait * 2)) -le $max_timeout ]; then
+                wait=$((wait * 2))
+            else
+                wait=$max_timeout
+            fi  
+
+            count=$((count+1))
+            if [ $count -ge $retries ]; then
+                echo  "Deploy request $number is not ready after $retries retries. Exiting..."
+                return 2
+            fi
+            echo  "Deploy-request $number is not deployed yet. Current status:"
+            echo "show vitess_migrations\G" | pscale shell "$db" main --org "$org"
+            echo "Retrying in $wait seconds..."
+            sleep $wait
+        elif [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
+            echo  "Deploy-request $number has been deployed successfully."
+            return 0
+        else
+            echo  "Deploy-request $number with unknown status: $output"
+            return 3
+        fi
+    done
+}
+
 function create-deployment {
     echo "Going to deploy deployment request $deploy_request with the following changes: "
 
-    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
+    if [ $? -ne 0 ]; then
+        echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
+        echo "Check out the deploy request status at $deploy_request"
+        exit 5
+    else
+        echo "Check out the deploy request at $deploy_request"
+    fi
 
-    pscale deploy-request deploy "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
+    pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
     # check return code, if not 0 then error
     if [ $? -ne 0 ]; then
         echo "Error: pscale deploy-request deploy returned non-zero exit code"
         exit 1
     fi
 
-    wait_for_deploy_request_merged 9 "$DB_NAME" "$deploy_request_number" "$ORG_NAME" 60
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
         echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
         echo "Check out the deploy request status at $deploy_request"
