@@ -8,8 +8,8 @@ on: push
 
 # List of jobs
 jobs:
-  concurrency: ci-${{ github.ref }}
   chromatic-deployment:
+    concurrency: ci-${{ github.ref }}
     # Operating System
     runs-on: ubuntu-latest
     # Job steps
