@@ -228,10 +228,11 @@ jobs:
         env:
           HEAD_REF: ${{fromJSON(steps.PR.outputs.pr).head.ref}}
           BASE_REF: ${{fromJSON(steps.PR.outputs.pr).base.ref}}
+          PR_CLOSED: ${{ steps.PR.outputs.prClosedAt  }}
         run: |
-          echo '::set-output name=HEAD_REF::${HEAD_REF//\-//}'
-          echo '::set-output name=BASE_REF::${BASE_REF//\-//}'
-          echo '::set-output name=PR_CLOSED::${{ steps.PR.outputs.prClosedAt  }}'
+          echo '::set-output name=HEAD_REF::$HEAD_REF'
+          echo '::set-output name=BASE_REF::$BASE_REF'
+          echo '::set-output name=PR_CLOSED::$PR_CLOSED'
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
