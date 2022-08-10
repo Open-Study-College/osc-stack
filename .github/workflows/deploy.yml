@@ -225,9 +225,12 @@ jobs:
         id: PR
 
       - name: Get PR details
+        env:
+          HEAD_REF: ${{fromJSON(steps.PR.outputs.pr).head.ref}}
+          BASE_REF: ${{fromJSON(steps.PR.outputs.pr).base.ref}}
         run: |
-          echo '::set-output name=HEAD_REF::${ fromJSON(steps.PR.outputs.pr).head.ref//\-//}'
-          echo '::set-output name=BASE_REF::${ fromJSON(steps.PR.outputs.pr).base.ref//\-//}'
+          echo '::set-output name=HEAD_REF::${HEAD_REF//\-//}'
+          echo '::set-output name=BASE_REF::${BASE_REF//\-//}'
           echo '::set-output name=PR_CLOSED::${{ steps.PR.outputs.prClosedAt  }}'
 
       - name: 🛑 Cancel Previous Runs
