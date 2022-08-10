@@ -65,12 +65,10 @@ function create-deploy-request {
     fi
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
-    echo "Check out the deploy request created at $deploy_request"
-    echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-    export DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER
-    echo "DEPLOY_REQUEST_NUMBER=$DEPLOY_REQUEST_NUMBER" >> $GITHUB_ENV
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
+    export DEPLOY_REQUEST_NUMBER=$deploy_request_number
+    echo "DEPLOY_REQUEST_NUMBER=$deploy_request_number" >> $GITHUB_ENV
 }
 
 function create-deploy-request-info {
@@ -208,7 +206,7 @@ function wait_for_deploy_request_merged {
         fi
         local output=`echo $raw_output | jq ".[] | select(.number == $number) | .deployment.state"`
         # test whether output is pending, if so, increase wait timeout exponentially
-        if [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
+        if [ "$output" = "\"submitting\"" ] || [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
             # increase wait variable exponentially but only if it is less than max_timeout
             if [ $((wait * 2)) -le $max_timeout ]; then
                 wait=$((wait * 2))
@@ -221,11 +219,10 @@ function wait_for_deploy_request_merged {
                 echo  "Deploy request $number is not ready after $retries retries. Exiting..."
                 return 2
             fi
-            echo  "Deploy-request $number is not deployed yet. Current status:"
-            echo "show vitess_migrations\G" | pscale shell "$db" main --org "$org"
+            echo  "Deploy-request $number is not deployed yet."
             echo "Retrying in $wait seconds..."
             sleep $wait
-        elif [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
+        elif [ "$output" = "\"ready\"" ] || [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
             echo  "Deploy-request $number has been deployed successfully."
             return 0
         else
@@ -236,7 +233,14 @@ function wait_for_deploy_request_merged {
 }
 
 function create-deployment {
+    local DB_NAME=$1
+    local BRANCH_NAME=$2
+    local DEPLOY_REQUEST_NUMBER=$3
+    local ORG_NAME=$4
+
     echo "Going to deploy deployment request $deploy_request with the following changes: "
+
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER" "$BRANCH_NAME"
 
     wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
@@ -264,5 +268,4 @@ function create-deployment {
     fi
 
     pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME"
-
 }
