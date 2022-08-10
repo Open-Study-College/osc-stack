@@ -11,6 +11,9 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
+      - name: ${{github.event.action}}
+        run: echo ${{github.event.action}}
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -126,6 +129,7 @@ jobs:
         run: |
           echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
           echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "PR_CLOSED"=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -160,7 +164,7 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🐳 Docker build main
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
@@ -186,7 +190,7 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build staging
-        if: ${{ env.BASE_REF == 'staging' }}
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -204,6 +208,7 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: 🚚 Move cache
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED || env.HEAD_REF == 'staging' && env.BASE_REF == 'release' || env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
