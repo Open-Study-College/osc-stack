@@ -223,16 +223,14 @@ jobs:
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.1.0
         id: PR
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Get PR details
-        env:
-          HEAD_REF: ${{fromJSON(steps.PR.outputs.pr).head.ref}}
-          BASE_REF: ${{fromJSON(steps.PR.outputs.pr).base.ref}}
-          PR_CLOSED: ${{ steps.PR.outputs.prClosedAt  }}
         run: |
-          echo '::set-output name=HEAD_REF::$HEAD_REF'
-          echo '::set-output name=BASE_REF::$BASE_REF'
-          echo '::set-output name=PR_CLOSED::$PR_CLOSED'
+          echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "PR_CLOSED=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}" >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
