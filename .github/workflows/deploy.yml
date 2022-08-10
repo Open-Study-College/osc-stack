@@ -1,6 +1,10 @@
 name: 🚀 Deploy
 on:
-  push: {}
+  push:
+    branches:
+      - main
+      - release
+      - staging
 permissions:
   actions: write
   contents: read
@@ -11,11 +15,8 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: Get Pull Request Number
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
+      - name: ${{github.event.action}}
+        run: echo ${{github.event.action}}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -120,11 +121,20 @@ jobs:
           PORT: "8811"
 
   build:
+    concurrency: ci-${{ github.ref }}
+    permissions: write-all
     name: 🐳 Build
-    # only build/deploy main branch on pushes
-    if: ${{ (github.head_ref == 'release' && github.base_ref == 'main' || github.head_ref == 'staging' && github.base_ref == 'release' || github.base_ref == 'staging' )}}
     runs-on: ubuntu-latest
     steps:
+      - uses: 8BitJonny/gh-get-current-pr@2.1.0
+        id: PR
+
+      - name: Get PR details
+        run: |
+          echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "PR_CLOSED=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}" >> $GITHUB_ENV
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -158,25 +168,25 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🐳 Docker build main
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
           context: .
           push: true
-          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}
+          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: 🐳 Docker build release
-        if: ${{ github.head_ref == 'staging' && github.base_ref == 'release' }}
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' }}
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}
+          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -184,12 +194,12 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build staging
-        if: ${{ github.base_ref == 'staging' }}
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}
+          tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -202,15 +212,27 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: 🚚 Move cache
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED || env.HEAD_REF == 'staging' && env.BASE_REF == 'release' || env.HEAD_REF == 'release' && env.BASE_REF == 'main' }}
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy:
+    concurrency: ci-${{ github.ref }}
+    permissions: write-all
     name: 🚀 Deploy
     runs-on: ubuntu-latest
     needs: [lint, typecheck, vitest, cypress, build]
     steps:
+      - uses: 8BitJonny/gh-get-current-pr@2.1.0
+        id: PR
+
+      - name: Get PR details
+        run: |
+          echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "PR_CLOSED"=${{ steps.PR.outputs.pr_created_at != null && steps.PR.outputs.pr_merged_at != null  }}
+
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -225,38 +247,31 @@ jobs:
           field: "app"
 
       - name: 🚀 Deploy Staging
-        if: ${{ github.base_ref == 'staging' }}
+        if: ${{ env.BASE_REF == 'staging' }}
         uses: superfly/flyctl-actions@1.3
         with:
-          args: "deploy --app ${{ steps.app_name.outputs.value }}-staging --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}"
+          args: "deploy --app ${{ steps.app_name.outputs.value }}-staging --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Release
-        if: ${{ github.head_ref == 'staging' && github.base_ref == 'release' }}
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' }}
         uses: superfly/flyctl-actions@1.3
         with:
-          args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}"
+          args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Production
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
         uses: superfly/flyctl-actions@1.3
         with:
-          args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ github.head_ref }}-${{ github.sha }}"
+          args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Get Pull Request Number
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
-
       - name: Create and merge deployment request && delete db branch
-        if: ${{ github.head_ref == 'release' && github.base_ref == 'main'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main'}}
         id: create-dr
         timeout-minutes: 3
         env:
@@ -265,6 +280,6 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+          BRANCH_NAME: pr-${{ steps.PR.outputs.number }}
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
