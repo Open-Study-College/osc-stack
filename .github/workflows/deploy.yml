@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request Number
-        if: ${{ steps.findPr.outputs.title == 'release' && github.ref_name == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
@@ -130,7 +129,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request Number
-        if: ${{ steps.findPr.outputs.title == 'release' && github.ref_name == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
@@ -224,7 +222,6 @@ jobs:
     needs: [lint, typecheck, vitest, cypress, build]
     steps:
       - name: Get Pull Request Number
-        if: ${{ steps.findPr.outputs.title == 'release' && github.ref_name == 'main'}}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
