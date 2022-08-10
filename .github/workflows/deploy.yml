@@ -287,7 +287,7 @@ jobs:
           ORG_NAME: ${{secrets.ORG_NAME}}
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ github.event.number }}
+          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
           DIR: /migrationTmpData
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
