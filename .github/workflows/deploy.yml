@@ -194,7 +194,7 @@ jobs:
           file: ./Dockerfiles/Dockerfile.release
 
       - name: 🐳 Docker build staging
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == true }}
         uses: docker/build-push-action@v2
         with:
           context: .
