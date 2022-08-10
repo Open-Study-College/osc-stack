@@ -5,4 +5,4 @@
 . .pscale/cli-helper-scripts/wait-for-deploy-request-merged.sh
 . .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
 . .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
-create-deployment "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER"
+create-deployment "$DB_NAME" "$BRANCH_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME"
