@@ -123,8 +123,8 @@ jobs:
 
       - name: Get PR details
         run: |
-          echo "from ${{ fromJSON(steps.PR.outputs.pr).head.ref }}" | sed 's/\//\-/g'
-          echo "to ${{ fromJSON(steps.PR.outputs.pr).base.ref }}" | sed 's/\//\-/g'
+          echo "HEAD_REF=${{ fromJSON(steps.PR.outputs.pr).head.ref }}" | sed 's/\//\-/g' >> $GITHUB_ENV
+          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref }}" | sed 's/\//\-/g' >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
