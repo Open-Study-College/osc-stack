@@ -1,6 +1,6 @@
 name: 🚀 Deploy
 on:
-  push: {}
+  pull_request: {}
 permissions:
   actions: write
   contents: read
@@ -123,12 +123,14 @@ jobs:
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.1.0
         id: PR
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: format head_ref
         uses: bluwy/substitute-string-action@v1
         id: findandreplace
         with:
-          _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref  }}
+          _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref }}
           /: "-"
 
       - name: Get PR details
