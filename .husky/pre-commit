@@ -22,8 +22,8 @@ exec 1>&2
 
 if git diff --cached --name-only $against |
    grep --quiet --line-regexp --fixed-strings "$MUST_NOT_CHANGE" &&
-   ($(git rev-parse --abbrev-ref HEAD) == db* |
-   $(git rev-parse --abbrev-ref HEAD) = Db*)
+   (ref_name == db* |
+   ref_name == Db*)
 then
   echo Commit would modify schema.prisma, use a db branch instead.
   exit 1

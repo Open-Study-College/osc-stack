@@ -17,8 +17,8 @@ do
 
   if git diff --name-only $against..$new_value |
      grep --quiet --line-regexp --fixed-strings "$MUST_NOT_CHANGE" &&
-   ($(git rev-parse --abbrev-ref HEAD) == db* |
-   $(git rev-parse --abbrev-ref HEAD) = Db*)
+   (ref_name == db* |
+   ref_name == Db*)
   then
     echo "$ref_name" may commit key, rejected ... >&2
     exit 1
