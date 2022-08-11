@@ -1,19 +1,13 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-if [ "$(git diff --exit-code ./prisma/schema.prisma)" = "1" ]; then
-echo "Cannot change the schema in a non-db branch. Aborting commit..."
-echo "Unstage schema.prisma to commit."
-exit 1
-fi
-
 npm run build:css
 npx lint-staged
 
 #!/bin/sh
 
 # full paths from the repo root separated by newlines
-MUST_NOT_CHANGE='prisma/schema.prisma
+MUST_NOT_CHANGE='prisma/**/*
 '
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
