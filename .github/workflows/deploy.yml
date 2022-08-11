@@ -230,7 +230,7 @@ jobs:
         uses: bluwy/substitute-string-action@v1
         id: findandreplace
         with:
-          _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref }}
+          _input-text: ${{ github.head_ref }}
           /: "-"
 
       - name: Get PR details
