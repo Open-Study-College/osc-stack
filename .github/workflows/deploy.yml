@@ -122,22 +122,17 @@ jobs:
     name: 🐳 Build
     runs-on: ubuntu-latest
     steps:
-      - uses: 8BitJonny/gh-get-current-pr@2.1.0
-        id: PR
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
-
       - name: format head_ref
         uses: bluwy/substitute-string-action@v1
         id: findandreplace
         with:
-          _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref }}
+          _input-text: ${{ github.head_ref }}
           /: "-"
 
       - name: Get PR details
         run: |
           echo "HEAD_REF=${{ steps.findandreplace.outputs.result }}" >> $GITHUB_ENV
-          echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" >> $GITHUB_ENV
+          echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
@@ -188,7 +183,7 @@ jobs:
 
       - name: 🐳 Docker build release
         id: "docker-build-release"
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'false'}}
+        if: ${{ env.HEAD_REF == 'staging' && env.BASE_REF == 'release' && env.PR_CLOSED == 'true'}}
         uses: docker/build-push-action@v2
         with:
           context: .
