@@ -7,7 +7,7 @@ npx lint-staged
 #!/bin/sh
 
 # full paths from the repo root separated by newlines
-MUST_NOT_CHANGE='prisma/**/*
+MUST_NOT_CHANGE='prisma/schema.prisma
 '
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
@@ -22,8 +22,8 @@ exec 1>&2
 
 if git diff --cached --name-only $against |
    grep --quiet --line-regexp --fixed-strings "$MUST_NOT_CHANGE" &&
-   (ref_name == db* |
-   ref_name == Db*)
+   ($(git rev-parse --abbrev-ref HEAD) == db* |
+   $(git rev-parse --abbrev-ref HEAD) = Db*)
 then
   echo Commit would modify schema.prisma, use a db branch instead.
   exit 1
