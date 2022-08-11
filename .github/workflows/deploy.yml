@@ -1,6 +1,7 @@
 name: 🚀 Deploy
 on:
   push: {}
+  pull_request: {}
 permissions:
   actions: write
   contents: read
