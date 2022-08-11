@@ -278,14 +278,14 @@ jobs:
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true'}}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
         id: create-db-branch
         timeout-minutes: 3
         env:
