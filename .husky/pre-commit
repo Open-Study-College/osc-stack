@@ -29,7 +29,7 @@ exec 1>&2
 if git diff --cached --name-only $against |
    grep --quiet --line-regexp --fixed-strings "$MUST_NOT_CHANGE"
 then
-  echo Commit would modify one or more files that must not change.
+  echo Commit would modify schema.prisma, use a db branch instead.
   exit 1
 else
   exit 0
