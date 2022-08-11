@@ -124,13 +124,13 @@ jobs:
       - uses: 8BitJonny/gh-get-current-pr@2.1.0
         id: PR
 
-      - name: Run find-and-replace to remove slashes
-        uses: mad9000/actions-find-and-replace-string@1
+      - name: format head_ref
+        uses: bluwy/substitute-string-action@v1
         id: findandreplace
         with:
-          source: ${{ fromJSON(steps.PR.outputs.pr).head.ref  }}
-          find: "/"
-          replace: "-"
+          _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref  }}
+          /: \-
+      - run: echo ${{ steps.findandreplace.outputs.result }}
 
       - name: Get PR details
         run: |
