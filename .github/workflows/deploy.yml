@@ -278,14 +278,14 @@ jobs:
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && !startsWith(env.HEAD_REF, 'db') || !startsWith(env.HEAD_REF, 'Db') }}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && !startsWith(env.HEAD_REF, 'db') || !startsWith(env.HEAD_REF, 'Db') }}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
         id: create-db-branch
         timeout-minutes: 3
         env:
@@ -301,7 +301,7 @@ jobs:
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - name: Create and merge deployment request && delete db branch
-        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && !startsWith(env.HEAD_REF, 'db') || !startsWith(env.HEAD_REF, 'Db') }}
+        if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
         id: create-dr
         timeout-minutes: 3
         env:
