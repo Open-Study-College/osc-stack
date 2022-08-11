@@ -138,7 +138,7 @@ jobs:
         run: |
           echo "HEAD_REF=${{ steps.findandreplace.outputs.result }}" >> $GITHUB_ENV
           echo "BASE_REF=${{ fromJSON(steps.PR.outputs.pr).base.ref  }}" >> $GITHUB_ENV
-          echo "PR_CLOSED=${{ steps.PR.outputs.prClosedAt != null }}" >> $GITHUB_ENV
+          echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
