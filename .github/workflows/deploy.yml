@@ -129,7 +129,7 @@ jobs:
         id: findandreplace
         with:
           _input-text: ${{ fromJSON(steps.PR.outputs.pr).head.ref  }}
-          /: \-
+          /: "-"
       - run: echo ${{ steps.findandreplace.outputs.result }}
 
       - name: Get PR details
