@@ -278,7 +278,7 @@ jobs:
 
       - name: check for schema changes
         run: |
-          ./.pscale/cli-helper-scripts/check-schema-changes-in-pr.sh
+          ./.pscale/cli-helper-scripts/check-for-schema-change-in-pr.sh
 
       # get a list of all open branches
       - name: Get Pull Request Number
