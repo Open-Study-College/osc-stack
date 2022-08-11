@@ -1,15 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
-
-# if [ "$branch" startsWith "master"]; then
-  if [ "$(git diff --exit-code ./prisma/schema.prisma)" = "1" ]; then
-    echo "Cannot change the schema in a non-db branch. Aborting commit..."
-    echo "Unstage schema.prisma to commit."
-    exit 1
-  fi
-# fi
+if [ "$(git diff --exit-code ./prisma/schema.prisma)" = "1" ]; then
+echo "Cannot change the schema in a non-db branch. Aborting commit..."
+echo "Unstage schema.prisma to commit."
+exit 1
+fi
 
 npm run build:css
 npx lint-staged
