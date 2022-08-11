@@ -13,7 +13,8 @@ npx lint-staged
 #!/bin/sh
 
 # full paths from the repo root separated by newlines
-MUST_NOT_CHANGE='prisma'
+MUST_NOT_CHANGE='prisma/schema.prisma
+'
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
