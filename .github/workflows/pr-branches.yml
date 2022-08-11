@@ -11,7 +11,8 @@ jobs:
   build:
     name: 🐳 Build PR Branch
     if: ${{ github.base_ref != 'main' && github.base_ref != 'release' && (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
-    runs-on: ubuntu-latest
+    runs-o
+    n: ubuntu-latest
     steps:
       - name: echo pr title
         run: echo ${{ github.base_ref }}
