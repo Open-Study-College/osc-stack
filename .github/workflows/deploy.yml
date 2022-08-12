@@ -124,7 +124,7 @@ jobs:
     name: 🐳 Build
     runs-on: ubuntu-latest
     steps:
-      - name: check for schema changes
+      - id: files
         uses: jitterbit/get-changed-files@v1
       - run: |
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
