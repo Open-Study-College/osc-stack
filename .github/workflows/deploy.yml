@@ -177,7 +177,6 @@ jobs:
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
-            DB_PUSH_MAIN=${{ env.DB_PUSH_MAIN}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 

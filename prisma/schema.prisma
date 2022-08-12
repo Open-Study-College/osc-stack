@@ -16,6 +16,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name String @default("john doe")
+  name2 String @default("schema change 1")
 
   password Password?
 }
