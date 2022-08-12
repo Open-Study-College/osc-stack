@@ -281,7 +281,7 @@ jobs:
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ env.BASE_REF == 'main' && env,HEAD_REF == 'release' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'main' && env.HEAD_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
