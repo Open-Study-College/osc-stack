@@ -212,7 +212,6 @@ export default function App() {
         <Document>
             <ChakraProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
                 <Outlet />
-                <h1>random change to see what is fired when i merge a pr into main</h1>
             </ChakraProvider>
         </Document>
     );
