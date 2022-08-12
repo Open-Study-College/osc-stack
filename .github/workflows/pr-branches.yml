@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: 🐳 Build PR Branch
-    if: ${{ github.base_ref != 'main' && github.base_ref != 'release' && (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
+    if: ${{ github.base_ref != 'production' && github.base_ref != 'release' && (!startsWith(github.head_ref, 'db') || !startsWith(github.head_ref, 'Db') ) }}
     runs-on: ubuntu-latest
     steps:
       - name: echo pr title
@@ -127,7 +127,7 @@ jobs:
           args: "volumes create data --region lhr --size 1 --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
 
       - name: 🚀 Deploy PR Branch
-        if: ${{ github.base_ref != 'main' }}
+        if: ${{ github.base_ref != 'production' && github.base_ref != 'release' }}
         id: deploy_pr
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
