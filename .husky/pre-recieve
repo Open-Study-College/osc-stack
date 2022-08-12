@@ -27,7 +27,7 @@ do
 done
 fi
 
-if [[ $BRANCH != Db* ]] ; then
+if [[ "$BRANCH" != ^Db* ]] ; then
 while read old_value new_value ref_name
 do
   if [ "$old_value" = $z40 ]; then

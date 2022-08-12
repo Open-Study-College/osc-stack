@@ -34,7 +34,7 @@ else
 fi
 fi
 
-if [[ $BRANCH != b* ]] ; then
+if [[ "$BRANCH" != ^Db* ]] ; then
 echo $BRANCH
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
