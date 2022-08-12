@@ -288,6 +288,8 @@ jobs:
         with:
           state: all
 
+      - run: echo ${{ env.SCHEMA_CHANGED }}
+
       - name: Create database branch - if asked, please click on displayed link to authenticate
         if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.SCHEMA_CHANGED == 'true' }}
         id: create-db-branch
