@@ -39,6 +39,25 @@ RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
+
+ARG PLANETSCALE_SERVICE_TOKEN_ID
+ARG PLANETSCALE_SERVICE_TOKEN
+ARG ORG_NAME
+ARG DB_NAME
+ARG GITHUB_USER
+ARG BRANCH_NAME
+ARG DIR
+ARG FROM
+
+ENV PLANETSCALE_SERVICE_TOKEN_ID = "${PLANETSCALE_SERVICE_TOKEN_ID}"
+ENV PLANETSCALE_SERVICE_TOKEN = "${PLANETSCALE_SERVICE_TOKEN}"
+ENV ORG_NAME = "${ORG_NAME}"
+ENV DB_NAME = "${DB_NAME}"
+ENV GITHUB_USER = "${GITHUB_USER}"
+ENV BRANCH_NAME = "${BRANCH_NAME}"
+ENV DIR = "${DIR}"
+ENV FROM = "${FROM}"
+
 ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://7xc0l0rrnjsw:pscale_pw_wzlLK_oaPmvvvNLZY9FH-ZO-2-dASA2xdtd5pXsoee0@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 ENV PORT="8080"
 ENV NODE_ENV="production"
@@ -64,5 +83,6 @@ EXPOSE 3306
 EXPOSE 8080
 
 
+RUN ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 COPY ./prisma /app/node_modules/.prisma
 CMD ["npm", "start"]

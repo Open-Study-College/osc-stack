@@ -131,30 +131,6 @@ jobs:
           echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
 
-      # get a list of all open branches
-      - name: Get Pull Request Number
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
-
-      - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
-        id: create-db-branch
-        timeout-minutes: 3
-        env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-          ORG_NAME: ${{secrets.ORG_NAME}}
-          DB_NAME: ${{secrets.DB_NAME}}
-          GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
-          DIR: /migrationTmpData
-          FROM: env,HEAD_REF
-        run: |
-          ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
-
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -187,6 +163,14 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
+      # get a list of all open branches
+      - name: Get Pull Request Number
+        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: all
+
       - name: 🐳 Docker build main
         id: docker-build-main
         if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' }}
@@ -198,6 +182,14 @@ jobs:
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
+            PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+            PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+            ORG_NAME: ${{secrets.ORG_NAME}}
+            DB_NAME: ${{secrets.DB_NAME}}
+            GITHUB_USER: ${{github.actor}}
+            BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+            DIR: /migrationTmpData
+            FROM: ${{ env.HEAD_REF }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
