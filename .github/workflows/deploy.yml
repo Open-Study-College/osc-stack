@@ -164,8 +164,8 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: 🐳 Docker build main
-        id: docker-build-main
+      - name: 🐳 Docker build production
+        id: docker-build-prod
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
@@ -212,7 +212,7 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: 🚚 Move cache
-        if: steps.docker-build-main.conclusion != 'skipped' && steps.docker-build-release.conclusion != 'skipped' && steps.docker-build-staging.conclusion != 'skipped'
+        if: steps.docker-build-prod.conclusion != 'skipped' && steps.docker-build-release.conclusion != 'skipped' && steps.docker-build-staging.conclusion != 'skipped'
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
@@ -235,7 +235,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # target main, base release
+      # target prod, base release
       - name: 🚀 Deploy Production
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
