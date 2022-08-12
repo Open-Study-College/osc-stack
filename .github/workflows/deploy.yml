@@ -140,7 +140,7 @@ jobs:
           fetch-depth: "0"
 
       - name: Set env
-        run: echo "CODE_DIFF=$(git diff --name-status origin/main origin/${{ github.head_ref }} -- "prisma/schema.prisma") != null" >> $GITHUB_ENV
+        run: echo "CODE_DIFF=$(git diff --name-status origin/main origin/${{ github.head_ref }} -- "prisma/schema.prisma" != null)" >> $GITHUB_ENV
 
       - name: echo code diff
         run: echo ${{env.CODE_DIFF}}
