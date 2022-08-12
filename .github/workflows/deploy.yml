@@ -184,7 +184,7 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
           DIR: /migrationTmpData
-          FROM: main2
+          FROM: main
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
