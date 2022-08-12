@@ -22,8 +22,8 @@ jobs:
           for added_modified_file in "${added_modified_files[@]}"; do
             if [[ ${added_modified_file} == *" prisma/schema.prisma "* ]]; then
               echo "Do something with this ${added_modified_file}."
-              export SCHEMA_CHANGED="true"
-              echo "SCHEMA_CHANGED=$true" >> $GITHUB_ENV
+              export SCHEMA_CHANGED=true
+              echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
             fi 
           done
 
