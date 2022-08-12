@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ${{github.event.action}}
-        run: echo ${{github.event.action}}
+        run: echo ${{env.SCHEMA_CHANGED}}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -278,9 +278,15 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: check for schema changes
-        run: |
-          ./.pscale/cli-helper-scripts/check-for-schema-change-in-pr.sh
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+        continue-on-error: true
+      - run: |
+          if [[ "${{ steps.files.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
+          then
+            export SCHEMA_CHANGED=true
+            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+          fi
 
       # get a list of all open branches
       - name: Get Pull Request Number
@@ -289,8 +295,6 @@ jobs:
         id: findPr
         with:
           state: all
-
-      - run: echo ${{ env.SCHEMA_CHANGED }}
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
         if: ${{ env.HEAD_REF == 'release' && env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.SCHEMA_CHANGED == 'true' }}
