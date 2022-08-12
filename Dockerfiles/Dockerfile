@@ -59,9 +59,6 @@ ADD . .
 
 # RUN mkdir -p prisma
 # COPY ./prisma /app/prisma
-# ARG DB_PUSH_MAIN=$DB_PUSH_MAIN
-# RUN if [ -z "$DB_PUSH_MAIN" ] ; then echo Argument is $DB_PUSH_MAIN ; else npx prisma db push --accept-data-loss ; fi
-
 
 EXPOSE 3306
 EXPOSE 8080
