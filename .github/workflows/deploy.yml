@@ -286,8 +286,7 @@ jobs:
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          fi
-          if [[ git diff main..${{ env.HEAD_REF }} -- "prisma/schema.prisma" ]];
+          elif [[ git diff main..${{ env.HEAD_REF }} -- "prisma/schema.prisma" ]];
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
