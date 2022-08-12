@@ -287,6 +287,11 @@ jobs:
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
           fi
+          if [[ git diff main..${{ env.BASE_REF }} -- "prisma/schema.prisma" ]];
+          then
+            export SCHEMA_CHANGED=true
+            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+          fi``
 
       # get a list of all open branches
       - name: Get Pull Request Number
