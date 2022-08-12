@@ -290,7 +290,7 @@ jobs:
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          fi``
+          fi
 
       # get a list of all open branches
       - name: Get Pull Request Number
