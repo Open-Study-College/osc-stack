@@ -241,21 +241,6 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: format head_ref
-        uses: bluwy/substitute-string-action@v1
-        id: findandreplace
-        with:
-          _input-text: ${{ github.head_ref }}
-          /: "-"
-
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: "0"
-
       - name: 👀 Read app name
         uses: SebRollen/toml-action@v1.0.0
         id: app_name
