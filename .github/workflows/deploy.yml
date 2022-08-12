@@ -241,13 +241,6 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: 👀 Read app name
-        uses: SebRollen/toml-action@v1.0.0
-        id: app_name
-        with:
-          file: "fly.toml"
-          field: "app"
-
       # target staging
       - name: 🚀 Deploy Staging
         if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
