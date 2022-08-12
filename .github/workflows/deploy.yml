@@ -288,11 +288,19 @@ jobs:
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          elif [[ -z env.CODE_DIFF ]];
-          then
-            export SCHEMA_CHANGED=true
-            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
           fi
+
+      - run: |
+          if [[ -z env.CODE_DIFF ]];
+          then
+            export CODE_CHANGED=true
+            echo "CODE_CHANGED=true" >> $GITHUB_ENV
+          fi
+
+      - id: generate schema changes for emergency merge
+        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.CODE_CHANGED == 'true' }}
+        uses: actions/setup-node@v3
+        run: npm run generate
 
       # get a list of all open branches
       - name: Get Pull Request Number
