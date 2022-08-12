@@ -297,9 +297,10 @@ jobs:
             echo "CODE_CHANGED=true" >> $GITHUB_ENV
           fi
 
-      - id: generate schema changes for emergency merge
+      - uses: actions/setup-node@v3
+
+      - id: npx-generate
         if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.CODE_CHANGED == 'true' }}
-        uses: actions/setup-node@v3
         run: npm run generate
 
       # get a list of all open branches
