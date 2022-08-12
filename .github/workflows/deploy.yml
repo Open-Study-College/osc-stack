@@ -287,7 +287,6 @@ jobs:
             echo "Do something with this ${added_modified_file}."
             if ${added_modified_file} == prisma/schema.prisma
               export SCHEMA_CHANGED=true
-            fi 
           done
 
       # get a list of all open branches
