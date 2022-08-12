@@ -128,11 +128,14 @@ jobs:
           _input-text: ${{ github.head_ref }}
           /: "-"
 
+      - uses: actions/setup-node@v3
+
       - name: Get PR details
         run: |
           echo "HEAD_REF=${{ steps.findandreplace.outputs.result }}" >> $GITHUB_ENV
           echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
+          echo "DB_PUSH_MAIN"=${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.HEAD_REF != 'release' && && env.HEAD_REF != "staging"}}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -177,6 +180,7 @@ jobs:
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
+            DB_PUSH_MAIN=${{ env.DB_PUSH_MAIN}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
@@ -276,32 +280,6 @@ jobs:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
-      - name: get code diff
-        run: echo "CODE_DIFF=$(git diff --name-status origin/main origin/${{ github.head_ref }} -- "prisma/schema.prisma")" >> $GITHUB_ENV
-
-      - id: schema_change_pr
-        uses: jitterbit/get-changed-files@v1
-        continue-on-error: true
-      - run: |
-          if [[ "${{ steps.schema_change_pr.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
-          then
-            export SCHEMA_CHANGED=true
-            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          fi
-
-      - run: |
-          if [[ -n env.CODE_DIFF ]];
-          then
-            export CODE_CHANGED=true
-            echo "CODE_CHANGED=true" >> $GITHUB_ENV
-          fi
-
-      - uses: actions/setup-node@v3
-
-      - id: push-release-to-main
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.CODE_CHANGED == 'true' }}
-        run: npm run push
 
       # get a list of all open branches
       - name: Get Pull Request Number
