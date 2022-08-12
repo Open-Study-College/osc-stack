@@ -14,17 +14,6 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
-
-      - name: Set env
-        run: echo "CODE_DIFF=$(git diff main..${{env.HEAD_REF}} -- "prisma/schema.prisma")" >> $GITHUB_ENV
-
-      - name: ${{github.event.action}}
-        run: echo ${{env.SCHEMA_CHANGED}}
-
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -144,6 +133,17 @@ jobs:
           echo "HEAD_REF=${{ steps.findandreplace.outputs.result }}" >> $GITHUB_ENV
           echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
+
+      - name: Git checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+
+      - name: Set env
+        run: echo "CODE_DIFF=$(git diff main..${{env.HEAD_REF}} -- "prisma/schema.prisma")" >> $GITHUB_ENV
+
+      - name: ${{github.event.action}}
+        run: echo ${{env.CODE_DIFF}}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
