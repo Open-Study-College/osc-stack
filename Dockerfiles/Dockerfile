@@ -63,4 +63,6 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
+
+COPY ./prisma /app/node_modules/.prisma
 CMD ["npm", "start"]
