@@ -65,4 +65,5 @@ EXPOSE 8080
 
 
 COPY ./prisma /app/node_modules/.prisma
+RUN npx prisma generate
 CMD ["npm", "start"]
