@@ -299,20 +299,20 @@ jobs:
 
       - uses: actions/setup-node@v3
 
-      - id: npx-generate
+      - id: push-release-to-main
         if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.CODE_CHANGED == 'true' }}
-        run: npm run generate
+        run: npm run push
 
       # get a list of all open branches
       - name: Get Pull Request Number
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.SCHEMA_CHANGED == 'true' }}
+        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && (env.SCHEMA_CHANGED == 'true' || env.CODE_CHANGED == 'true') }}
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           state: all
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.SCHEMA_CHANGED == 'true' }}
+        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && (env.SCHEMA_CHANGED == 'true' || env.CODE_CHANGED == 'true') }}
         id: create-db-branch
         timeout-minutes: 3
         env:
@@ -328,7 +328,7 @@ jobs:
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
       - name: Create and merge deployment request && delete db branch
-        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && env.SCHEMA_CHANGED == 'true' }}
+        if: ${{ env.BASE_REF == 'main' && env.PR_CLOSED == 'true' && (env.SCHEMA_CHANGED == 'true' || env.CODE_CHANGED == 'true') }}
         id: create-dr
         timeout-minutes: 3
         env:
