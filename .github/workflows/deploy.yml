@@ -28,7 +28,7 @@ jobs:
           done
 
       - name: ${{github.event.action}}
-        run: echo ${{github.event.action}}
+        run: echo ${{env.SCHEMA_CHANGED}}
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
