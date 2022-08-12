@@ -17,7 +17,7 @@
     "stylelint": "npx stylelint \"**/*.scss\" --allow-empty-input",
     "stylelint-and-fix": "npx stylelint \"**/*.scss\" --allow-empty-input --fix",
     "setup": "prisma db seed",
-    "push": "npx prisma db push",
+    "push": "npx prisma db push --accept-data-loss",
     "start": "remix-serve build",
     "start:mocks": "binode --require ./mocks -- @remix-run/serve:remix-serve build",
     "test": "vitest",
