@@ -132,7 +132,7 @@ jobs:
           echo "HEAD_REF=${{ steps.findandreplace.outputs.result }}" >> $GITHUB_ENV
           echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
-          echo "DB_PUSH_MAIN=${{ env.BASE_REF == "main" && env.PR_CLOSED == "true" && (env.HEAD_REF != "release" && env.HEAD_REF != "staging")}}" >> $GITHUB_ENV
+          echo "DB_PUSH_MAIN=${{ env.BASE_REF == main && env.PR_CLOSED == true && (env.HEAD_REF != release && env.HEAD_REF != staging )}}" >> $GITHUB_ENV
 
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
