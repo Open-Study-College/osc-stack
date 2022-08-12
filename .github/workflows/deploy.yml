@@ -291,7 +291,7 @@ jobs:
           fi
 
       - run: |
-          if [[ -z env.CODE_DIFF ]];
+          if [[ -n env.CODE_DIFF ]];
           then
             export CODE_CHANGED=true
             echo "CODE_CHANGED=true" >> $GITHUB_ENV
