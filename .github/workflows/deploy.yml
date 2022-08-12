@@ -278,6 +278,9 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: Set env
+        run: echo "GITHUB_SHA_SHORT=$(git diff "main"..env.HEAD_REF -- "prisma/schema.prisma")" >> $GITHUB_ENV
+
       - id: files
         uses: jitterbit/get-changed-files@v1
         continue-on-error: true
@@ -286,7 +289,7 @@ jobs:
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          elif [[ git diff main..${{ env.HEAD_REF }} -- "prisma/schema.prisma" ]];
+          elif [[ env.CODE_DIFF ]];
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
