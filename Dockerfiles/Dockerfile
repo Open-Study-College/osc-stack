@@ -58,8 +58,8 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
-# connect to main2 and push
-ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://uigxviu3luuk:pscale_pw_X4U38z1F5q8cz-1jxbVjmmBLKX7vG1_74g5iuZEJNuc@kwig92irdb0v.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+# connect to production and push
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://f9mgtgpwpsry:pscale_pw_mJh8lq0lhDXWb1lb1sKwymFRVa3UXGOmAaArgDmbMnw@q4wompi1czg7.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 RUN npx prisma db push --accept-data-loss
 
 # connect to main and await dr

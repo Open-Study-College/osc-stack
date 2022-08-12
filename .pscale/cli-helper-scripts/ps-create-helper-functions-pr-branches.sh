@@ -53,7 +53,7 @@ function create-deploy-request {
     local BRANCH_NAME=$2
     local ORG_NAME=$3
 
-    local raw_output=`pscale deploy-request create "$DB_NAME" "main2" --org "$ORG_NAME" --format json --deploy-to "main"`
+    local raw_output=`pscale deploy-request create "$DB_NAME" "production" --org "$ORG_NAME" --format json --deploy-to "main"`
 
     if [ $? -ne 0 ]; then
         echo "Deploy request could not be created: $raw_output"
