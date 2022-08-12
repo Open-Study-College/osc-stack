@@ -63,7 +63,5 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
-
-COPY ./prisma /app/node_modules/.prisma
 RUN npx prisma db push --accept-data-loss
 CMD ["npm", "start"]
