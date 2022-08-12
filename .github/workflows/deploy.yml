@@ -134,17 +134,6 @@ jobs:
           echo "BASE_REF=${{ github.base_ref  }}" >> $GITHUB_ENV
           echo "PR_CLOSED=${{ github.event.pull_request.merged == true }}" >> $GITHUB_ENV
 
-      - name: Git checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
-
-      - name: Set env
-        run: echo "CODE_DIFF=$(git diff --name-status origin/main origin/${{ github.head_ref }} -- "prisma/schema.prisma" != null)" >> $GITHUB_ENV
-
-      - name: echo code diff
-        run: echo ${{env.CODE_DIFF}}
-
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
@@ -254,6 +243,8 @@ jobs:
 
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
 
       - name: 👀 Read app name
         uses: SebRollen/toml-action@v1.0.0
@@ -286,15 +277,18 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - id: files
+      - name: get code diff
+        run: echo "CODE_DIFF=$(git diff --name-status origin/main origin/${{ github.head_ref }} -- "prisma/schema.prisma")" >> $GITHUB_ENV
+
+      - id: schema_change_pr
         uses: jitterbit/get-changed-files@v1
         continue-on-error: true
       - run: |
-          if [[ "${{ steps.files.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
+          if [[ "${{ steps.schema_change_pr.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          elif [[ env.CODE_DIFF ]];
+          elif [[ -z env.CODE_DIFF ]];
           then
             export SCHEMA_CHANGED=true
             echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
