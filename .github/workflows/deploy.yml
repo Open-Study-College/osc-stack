@@ -124,6 +124,18 @@ jobs:
     name: 🐳 Build
     runs-on: ubuntu-latest
     steps:
+      - name: check for schema changes
+      - uses: jitterbit/get-changed-files@v1
+      - run: |
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
+          for added_modified_file in "${added_modified_files[@]}"; do
+            echo "Do something with this ${added_modified_file}."
+            if ${added_modified_file} == schema.prisma
+              export SCHEMA_CHANGED=true
+              echo "SCHEMA_CHANGED=$SCHEMA_CHANGED" >> $GITHUB_ENV
+            fi 
+          done
+
       - name: format head_ref
         uses: bluwy/substitute-string-action@v1
         id: findandreplace
@@ -277,10 +289,6 @@ jobs:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
-      - name: check for schema changes
-        run: |
-          ./.pscale/cli-helper-scripts/check-for-schema-change-in-pr.sh
 
       # get a list of all open branches
       - name: Get Pull Request Number
