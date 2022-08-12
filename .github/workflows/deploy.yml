@@ -5,6 +5,8 @@ on:
 permissions:
   actions: write
   contents: read
+concurrency:
+  group: ${{ github.ref }}
 
 jobs:
   lint:
