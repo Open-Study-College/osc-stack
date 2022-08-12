@@ -22,7 +22,9 @@ jobs:
           for added_modified_file in "${added_modified_files[@]}"; do
             echo "Do something with this ${added_modified_file}."
             if ${added_modified_file} == prisma/schema.prisma
-              export SCHEMA_CHANGED=true
+              export SCHEMA_CHANGED="true"
+              echo "SCHEMA_CHANGED=$SCHEMA_CHANGED" >> $GITHUB_ENV
+            fi 
           done
 
       - name: ${{github.event.action}}
