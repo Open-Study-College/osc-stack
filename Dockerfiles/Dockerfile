@@ -44,8 +44,6 @@ ENV PORT="8080"
 ENV NODE_ENV="production"
 ENV VAPID_PUBLIC_KEY="BNEalBKv4PPkaCfptTW582JLDjMqQzw6CUM6ZdP3mRMEndhRrkLhtBcwoterpS-n4Bghce1WEPPbVgj-2vOKaxw"
 ENV VAPID_PRIVATE_KEY="J6XOwjUQ9qLZpu8WC_srpcoisPTaSSyJE_FpFCI01ng"
-ARG DB_PUSH_MAIN=$DB_PUSH_MAIN
-RUN if [ -z "$DB_PUSH_MAIN" ] ; then echo Argument is $DB_PUSH_MAIN ; else npx prisma db push --accept-data-loss ; fi
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
@@ -61,6 +59,9 @@ ADD . .
 
 RUN mkdir -p prisma
 COPY ./prisma /app/prisma
+ARG DB_PUSH_MAIN=$DB_PUSH_MAIN
+RUN if [ -z "$DB_PUSH_MAIN" ] ; then echo Argument is $DB_PUSH_MAIN ; else npx prisma db push --accept-data-loss ; fi
+
 
 EXPOSE 3306
 EXPOSE 8080
