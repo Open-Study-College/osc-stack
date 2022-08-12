@@ -20,7 +20,7 @@ jobs:
           fetch-depth: "0"
 
       - name: Set env
-        run: echo "CODE_DIFF=$(git diff "main"..${{env.HEAD_REF}} -- "prisma/schema.prisma")" >> $GITHUB_ENV
+        run: echo "CODE_DIFF=$(git diff main..${{env.HEAD_REF}} -- "prisma/schema.prisma")" >> $GITHUB_ENV
 
       - name: ${{github.event.action}}
         run: echo ${{env.SCHEMA_CHANGED}}
