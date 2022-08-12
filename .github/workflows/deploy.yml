@@ -172,21 +172,23 @@ jobs:
         with:
           state: all
 
-      - name: Create database branch - if asked, please click on displayed link to authenticate
-        if: ${{ env.BASE_REF == 'main2' && env.PR_CLOSED == 'true' }}
-        id: create-db-branch
-        timeout-minutes: 3
-        env:
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-          ORG_NAME: ${{secrets.ORG_NAME}}
-          DB_NAME: ${{secrets.DB_NAME}}
-          GITHUB_USER: ${{github.actor}}
-          BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
-          DIR: /migrationTmpData
-          FROM: main
-        run: |
-          ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
+      # - name: Create database branch - if asked, please click on displayed link to authenticate
+      #   if: ${{ env.BASE_REF == 'main2' && env.PR_CLOSED == 'true' }}
+      #   id: create-db-branch
+      #   timeout-minutes: 3
+      #   env:
+      #     PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+      #     PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+      #     ORG_NAME: ${{secrets.ORG_NAME}}
+      #     DB_NAME: ${{secrets.DB_NAME}}
+      #     GITHUB_USER: ${{github.actor}}
+      #     BRANCH_NAME: pr-${{ steps.findPr.outputs.pr }}
+      #     DIR: /migrationTmpData
+      #     FROM: main
+      #   run: |
+      #     ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
+
+      #    MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
 
       - name: 🐳 Docker build main
         id: docker-build-main
@@ -198,7 +200,6 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
-            MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
