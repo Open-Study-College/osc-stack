@@ -12,7 +12,8 @@ MUST_NOT_CHANGE='prisma/schema.prisma
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-if  ! [[ "$BRANCH" == "db"* ]]; then
+if [[ "$BRANCH" != "db"* ]]; 
+then
   echo $BRANCH
   if git rev-parse --verify HEAD >/dev/null 2>&1
   then
@@ -34,7 +35,8 @@ if  ! [[ "$BRANCH" == "db"* ]]; then
   fi
 fi
 
-if ! [[ "$BRANCH" == "Db"* ]]; then
+if [[ "$BRANCH" != "Db"* ]]; 
+then
   echo $BRANCH
   echo "$BRANCH" != "Db"* 
   if git rev-parse --verify HEAD >/dev/null 2>&1
