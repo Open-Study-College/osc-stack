@@ -18,7 +18,7 @@ jobs:
         uses: jitterbit/get-changed-files@v1
         continue-on-error: true
       - run: |
-          if ${{ steps.files.outputs.added_modified }} == *" prisma/schema.prisma "*
+          if [ ${{ steps.files.outputs.added_modified }} == *" prisma/schema.prisma "* ]
           then
             echo "Do something with this ${added_modified_file}."
             export SCHEMA_CHANGED='true'
