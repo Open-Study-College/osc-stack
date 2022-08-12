@@ -165,12 +165,12 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       # get a list of all open branches
-      - name: Get Pull Request Number
-        if: ${{ env.BASE_REF == 'main2' && env.PR_CLOSED == 'true' }}
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          state: all
+      # - name: Get Pull Request Number
+      #   if: ${{ env.BASE_REF == 'main2' && env.PR_CLOSED == 'true' }}
+      #   uses: jwalton/gh-find-current-pr@v1
+      #   id: findPr
+      #   with:
+      #     state: all
 
       # - name: Create database branch - if asked, please click on displayed link to authenticate
       #   if: ${{ env.BASE_REF == 'main2' && env.PR_CLOSED == 'true' }}

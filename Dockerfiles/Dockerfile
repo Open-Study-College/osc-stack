@@ -63,11 +63,11 @@ EXPOSE 8080
 
 # ARG MY_DB_URL
 # connect to main2 and push
-ENV  PLANETSCALE_PRISMA_DATABASE_URL='mysql://uigxviu3luuk:pscale_pw_X4U38z1F5q8cz-1jxbVjmmBLKX7vG1_74g5iuZEJNuc@kwig92irdb0v.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://d57u4eu5n225:pscale_pw_3FeFvu5F93DA-bqFaqJVBhvjQMUO_2TKd4o1KoNQS50@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 
 RUN npx prisma db push --accept-data-loss
 
 # connect to main and await dr
-ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://d57u4eu5n225:pscale_pw_3FeFvu5F93DA-bqFaqJVBhvjQMUO_2TKd4o1KoNQS50@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 RUN npx prisma db push --accept-data-loss
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://uigxviu3luuk:pscale_pw_X4U38z1F5q8cz-1jxbVjmmBLKX7vG1_74g5iuZEJNuc@kwig92irdb0v.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
 CMD ["npm", "start"]
