@@ -82,7 +82,7 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
-
+COPY ./.pscale/cli-helper-scripts /app/.pscale/cli-helper-scripts
 RUN ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 COPY ./prisma /app/node_modules/.prisma
 CMD ["npm", "start"]
