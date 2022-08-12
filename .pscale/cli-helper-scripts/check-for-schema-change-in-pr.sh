@@ -6,9 +6,11 @@ if  git diff --name-status main..release |
 then
   echo Commit does modify schema.prisma.
   export SCHEMA_CHANGED=$SCHEMA_CHANGED
+  echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
   exit 0
 else
   echo Commit does not modify schema.prisma.
   export SCHEMA_CHANGED=$SCHEMA_CHANGED
+  echo "SCHEMA_CHANGED=false" >> $GITHUB_ENV
   exit 0
 fi
