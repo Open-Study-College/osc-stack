@@ -125,8 +125,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: check for schema changes
-      - uses: jitterbit/get-changed-files@v1
-      - run: |
+        uses: jitterbit/get-changed-files@v1
+        run: |
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
           for added_modified_file in "${added_modified_files[@]}"; do
             echo "Do something with this ${added_modified_file}."
