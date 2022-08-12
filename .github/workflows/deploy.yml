@@ -14,16 +14,6 @@ jobs:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
     steps:
-      - id: files
-        uses: jitterbit/get-changed-files@v1
-        continue-on-error: true
-      - run: |
-          if [[ "${{ steps.files.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
-          then
-            export SCHEMA_CHANGED=true
-            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
-          fi
-
       - name: ${{github.event.action}}
         run: echo ${{env.SCHEMA_CHANGED}}
 
@@ -287,6 +277,16 @@ jobs:
           args: "deploy --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+        continue-on-error: true
+      - run: |
+          if [[ "${{ steps.files.outputs.added_modified }}" == *"prisma/schema.prisma"* ]];
+          then
+            export SCHEMA_CHANGED=true
+            echo "SCHEMA_CHANGED=true" >> $GITHUB_ENV
+          fi
 
       # get a list of all open branches
       - name: Get Pull Request Number
