@@ -17,8 +17,6 @@ model User {
   updatedAt DateTime @updatedAt
   name String @default("john doe")
   name3 String @default("schema change 2")
-  name77 String @default("schema change 87")
-  name88 String @default("schema change 88")
 
   
   password Password?
