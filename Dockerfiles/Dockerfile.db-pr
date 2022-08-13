@@ -67,7 +67,7 @@ EXPOSE 8080
 # fix pre-existing schema problem
 RUN --mount=type=secret,id=DB_NAME \
     --mount=type=secret,id=MY_DB_URL \
-   export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/DB_NAME)$(cat /run/secrets/MY_DB_URL)?sslaccept=strict&sslcert=./cacert.pem && \
+   export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem && \
    npx prisma db push --accept-data-loss
 
 
