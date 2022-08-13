@@ -78,4 +78,4 @@ RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
 
 CMD [ "sh", "-c",  "--mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION \
     export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN) && \
-    npx prisma db push --accept-data-loss", "npm" "start" ]
+    npm run start", ]
