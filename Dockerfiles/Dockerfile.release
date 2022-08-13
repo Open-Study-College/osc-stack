@@ -39,15 +39,12 @@ RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
-ENV PLANETSCALE_PRISMA_DATABASE_URL="mysql://n92dyycvey2l:pscale_pw_Ktkkx9RnilI3qqJUomDHlyq-bWHPLKjpStB0MDbFeX8@pdzfmk3077qh.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
+ARG PLANETSCALE_PRISMA_DATABASE_URL_RELEASE
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_RELEASE}"
 ENV PORT="8080"
 ENV NODE_ENV="production"
 ENV VAPID_PUBLIC_KEY="BNEalBKv4PPkaCfptTW582JLDjMqQzw6CUM6ZdP3mRMEndhRrkLhtBcwoterpS-n4Bghce1WEPPbVgj-2vOKaxw"
 ENV VAPID_PRIVATE_KEY="J6XOwjUQ9qLZpu8WC_srpcoisPTaSSyJE_FpFCI01ng"
-
-
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 

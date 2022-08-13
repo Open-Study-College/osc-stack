@@ -41,10 +41,8 @@ RUN npm run build
 FROM base
 ENV PORT="8080"
 ENV NODE_ENV="production"
-ENV PLANETSCALE_PRISMA_DATABASE_URL="mysql://a9z71qt60m68:pscale_pw_p7hHFSoyN1JUv6rZEZotqlJRi71GeNrnC4srdbb-vuE@0aqxsg6986oq.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
-
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
+ARG PLANETSCALE_PRISMA_DATABASE_URL_PR
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_PR}"
 
 WORKDIR /myapp
 
