@@ -167,7 +167,7 @@ jobs:
       - name: 🐳 Docker build production
         id: docker-build-prod
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           secrets: |
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
@@ -186,7 +186,7 @@ jobs:
       - name: 🐳 Docker build release
         id: "docker-build-release"
         if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           secrets: |
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
@@ -204,7 +204,7 @@ jobs:
       - name: 🐳 Docker build staging
         id: docker-build-staging
         if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           secrets: |
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
