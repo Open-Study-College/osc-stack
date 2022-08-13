@@ -5,11 +5,7 @@ name: "Chromatic"
 
 # Event for the workflow
 on:
-  push:
-    branches:
-      - production
-      - release
-      - staging
+  push: {}
 
 # List of jobs
 jobs:

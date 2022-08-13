@@ -82,7 +82,7 @@ jobs:
   cypress:
     name: ⚫️ Cypress
     env:
-      PLANETSCALE_PRISMA_DATABASE_URL: "mysql://ql5abmy7lnfn:pscale_pw_S8TJXvCgOE3CoCbPr2TZdNVbO2c5Vt1Hde-lq572I5w@tmxaki849kom.eu-west-2.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem"
+      PLANETSCALE_PRISMA_DATABASE_URL: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_CYPRESS }}
       SESSION_SECRET: super-duper-secret
     runs-on: ubuntu-latest
     steps:
@@ -174,20 +174,27 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
+            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
+            PLANETSCALE_PRISMA_DATABASE_URL_PRODCUCTION: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION }}
+            PLANETSCALE_PRISMA_DATABASE_URL_MAIN: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_MAIN }}
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: 🐳 Docker build release
         id: "docker-build-release"
-        if: ${{ env.BASE_REF == 'release' && env.HEAD_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
+            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
             COMMIT_SHA=${{ github.sha }}
+            PLANETSCALE_PRISMA_DATABASE_URL_RELEASE: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_RELEASE }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           file: ./Dockerfiles/Dockerfile.release
@@ -201,7 +208,10 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
           build-args: |
+            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
             COMMIT_SHA=${{ github.sha }}
+            PLANETSCALE_PRISMA_DATABASE_URL_STAGING: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_STAGING }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           file: ./Dockerfiles/Dockerfile.staging
@@ -228,7 +238,7 @@ jobs:
 
       # target release, base staging
       - name: 🚀 Deploy Release
-        if: ${{ env.BASE_REF == 'release' && env.HEAD_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
