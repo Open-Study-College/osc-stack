@@ -82,4 +82,7 @@ RUN --mount=type=secret,id=DB_NAME \
     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
     npx prisma db push --accept-data-loss
 
+ARG DATABASE_URL
+ENV PRISMA_PLANETSCALE_DATABASE_URL=${DATABASE_URL}
+
 CMD cross-env npm start
