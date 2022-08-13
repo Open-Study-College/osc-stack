@@ -180,7 +180,7 @@ jobs:
 
       - name: 🐳 Docker build release
         id: "docker-build-release"
-        if: ${{ env.BASE_REF == 'release' && env.HEAD_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -228,7 +228,7 @@ jobs:
 
       # target release, base staging
       - name: 🚀 Deploy Release
-        if: ${{ env.BASE_REF == 'release' && env.HEAD_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
           args: "deploy --app ${{ steps.app_name.outputs.value }}-release --image registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}"
