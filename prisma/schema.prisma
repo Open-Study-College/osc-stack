@@ -15,7 +15,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  mergingToRelease String @default("john doe")
+  mergingDirectlyToRelease DateTime @default(now())
 
   
   password Password?
