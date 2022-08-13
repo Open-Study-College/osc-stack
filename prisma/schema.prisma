@@ -17,7 +17,6 @@ model User {
   updatedAt DateTime @updatedAt
   mergingToRelease String @default("john doe")
 
-  
   password Password?
 }
 
