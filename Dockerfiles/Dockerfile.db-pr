@@ -41,7 +41,6 @@ RUN npm run build
 FROM base
 ENV PORT="8080"
 ENV NODE_ENV="production"
-ARG MY_DB_URL
 RUN --mount=type=secret,id=DB_NAME \
     export DB_NAME="$(cat /run/secrets/DB_NAME)" 
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}${DB_NAME}?sslaccept=strict&sslcert=./cacert.pem"
@@ -67,7 +66,8 @@ EXPOSE 8080
 
 # fix pre-existing schema problem
 RUN --mount=type=secret,id=DB_NAME \
-   export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/DB_NAME)$(MY_DB_URL)?sslaccept=strict&sslcert=./cacert.pem && \
+    --mount=type=secret,id=MY_DB_URL
+   export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/DB_NAME)$(cat /run/secrets/MY_DB_URL)?sslaccept=strict&sslcert=./cacert.pem && \
    npx prisma db push --accept-data-loss
 
 

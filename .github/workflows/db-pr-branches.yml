@@ -84,11 +84,11 @@ jobs:
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
             "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}"
             "DB_NAME=${{ secrets.DB_NAME }}"
+            MY_DB_URL=${{ env.MY_DB_URL }}
           context: .
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            MY_DB_URL=${{ env.MY_DB_URL }}
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.db-pr
           cache-from: type=local,src=/tmp/.buildx-cache
