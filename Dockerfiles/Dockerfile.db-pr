@@ -67,5 +67,5 @@ EXPOSE 3306
 EXPOSE 8080
 
 # fix pre-existing schema problem
-RUN npx prisma db push --accept-data-loss
-CMD cross-env npm start
+RUN npx prisma db push --accept-data-loss echo PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem"
+CMD cross-env npm start echo PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem"
