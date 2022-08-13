@@ -68,7 +68,6 @@ EXPOSE 8080
 RUN --mount=type=secret,id=DB_NAME \
     --mount=type=secret,id=MY_DB_URL \
     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
-    echo $PLANETSCALE_PRISMA_DATABASE_URL && \
     npx prisma db push --accept-data-loss
 
 
@@ -76,5 +75,8 @@ RUN
 CMD --mount=type=secret,id=DB_NAME \
     --mount=type=secret,id=MY_DB_URL \
     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
-    echo $PLANETSCALE_PRISMA_DATABASE_URL && \
+    --mount=type=secret,id=VAPID_PUBLIC_KEY \
+    export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" && \
+    --mount=type=secret,id=VAPID_PRIVATE_KEY \
+    export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" && \
     cross-env npm start
