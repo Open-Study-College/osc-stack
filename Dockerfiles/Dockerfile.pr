@@ -62,6 +62,5 @@ COPY ./prisma /app/prisma
 EXPOSE 3306
 EXPOSE 8080
 
-# fix pre-existing schema problem
-RUN npx prisma db push --accept-data-loss
+# please note, not db push here, pr-branches should have no change to the schema
 CMD cross-env npm start
