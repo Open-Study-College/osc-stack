@@ -43,9 +43,8 @@ ENV PORT="8080"
 ENV NODE_ENV="production"
 ARG MY_DB_URL
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}?sslaccept=strict&sslcert=./cacert.pem"
-
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
+ENV VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY}"
+ENV VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY}"
 
 WORKDIR /myapp
 

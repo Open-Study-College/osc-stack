@@ -11,11 +11,18 @@ env:
 jobs:
   build:
     name: Build database branch and pr branch
-    if: ${{ github.base_ref != 'production' && github.base_ref != 'release' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
+    if: ${{ (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: format base_ref
+        uses: bluwy/substitute-string-action@v1
+        id: findandreplace
+        with:
+          _input-text: ${{ github.base_ref }}
+          /: "-"
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
@@ -28,7 +35,7 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ github.event.number }}
           DIR: /migrationTmpData
-          FROM: staging
+          FROM: ${{ steps.findandreplace.outputs.result }}
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
@@ -77,6 +84,8 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
+            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
             MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.db-pr
