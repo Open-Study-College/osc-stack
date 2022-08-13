@@ -17,11 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: format head_ref
+      - name: format base_ref
         uses: bluwy/substitute-string-action@v1
         id: findandreplace
         with:
-          _input-text: ${{ github.head_ref }}
+          _input-text: ${{ github.base_ref }}
           /: "-"
 
       - name: Create database branch - if asked, please click on displayed link to authenticate
