@@ -53,7 +53,8 @@ function create-deploy-request {
     local BRANCH_NAME=$2
     local ORG_NAME=$3
 
-    local raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main"`
+    local raw_output=`pscale deploy-request create "$DB_NAME" "production" --org "$ORG_NAME" --format json --deploy-to "main"`
+
     if [ $? -ne 0 ]; then
         echo "Deploy request could not be created: $raw_output"
         exit 1
@@ -257,14 +258,5 @@ function create-deployment {
     if [ $? -ne 0 ]; then
         echo "Error: pscale deploy-request deploy returned non-zero exit code"
         exit 1
-    fi
-
-    wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
-    if [ $? -ne 0 ]; then
-        echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
-        echo "Check out the deploy request status at $deploy_request"
-        exit 5
-    else
-        echo "Check out the deploy request at $deploy_request"
     fi
 }

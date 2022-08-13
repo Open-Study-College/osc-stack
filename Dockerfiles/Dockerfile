@@ -39,13 +39,11 @@ RUN npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
-ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://7xc0l0rrnjsw:pscale_pw_wzlLK_oaPmvvvNLZY9FH-ZO-2-dASA2xdtd5pXsoee0@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+
 ENV PORT="8080"
 ENV NODE_ENV="production"
 ENV VAPID_PUBLIC_KEY="BNEalBKv4PPkaCfptTW582JLDjMqQzw6CUM6ZdP3mRMEndhRrkLhtBcwoterpS-n4Bghce1WEPPbVgj-2vOKaxw"
 ENV VAPID_PRIVATE_KEY="J6XOwjUQ9qLZpu8WC_srpcoisPTaSSyJE_FpFCI01ng"
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nprisma \$PLANETSCALE_PRISMA_DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 
@@ -57,10 +55,14 @@ COPY --from=build /myapp/public /myapp/public
 
 ADD . .
 
-# RUN mkdir -p prisma
-# COPY ./prisma /app/prisma
-
 EXPOSE 3306
 EXPOSE 8080
 
+# connect to production and push
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://f9mgtgpwpsry:pscale_pw_mJh8lq0lhDXWb1lb1sKwymFRVa3UXGOmAaArgDmbMnw@q4wompi1czg7.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+RUN npx prisma db push --accept-data-loss
+
+# connect to main and await dr
+ENV PLANETSCALE_PRISMA_DATABASE_URL='mysql://d57u4eu5n225:pscale_pw_3FeFvu5F93DA-bqFaqJVBhvjQMUO_2TKd4o1KoNQS50@nexhi31uvoo0.eu-west-3.psdb.cloud/osc-academic?sslaccept=strict&sslcert=./cacert.pem'
+RUN npx prisma generate
 CMD ["npm", "start"]
