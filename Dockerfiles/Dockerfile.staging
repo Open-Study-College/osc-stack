@@ -32,24 +32,21 @@ WORKDIR /myapp
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD prisma .
-RUN npx prisma generate
+RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)" && \
+    npx prisma db generate
 
 ADD . .
-RUN npm run build
+RUN --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
+    --mount=type=secret,id=VAPID_PUBLIC_KEY \
+    --mount=type=secret,id=VAPID_PRIVATE_KEY \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)" && \
+    export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" && \
+    export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" && \
+    npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
-RUN --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
-ARG PLANETSCALE_PRISMA_DATABASE_URL_STAGING = $(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)
-ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_STAGING}"
-ENV PORT="8080"
-ENV NODE_ENV="production"
-RUN --mount=type=secret,id=VAPID_PUBLIC_KEY \
-ARG VAPID_PUBLIC_KEY = $(cat /run/secrets/VAPID_PUBLIC_KEY)
-ENV VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY}"
-RUN --mount=type=secret,id=VAPID_PRIVATE_KEY \
-ARG VAPID_PRIVATE_KEY = $(cat /run/secrets/VAPID_PRIVATE_KEY)
-ENV VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY}"
 
 WORKDIR /myapp
 
@@ -64,6 +61,8 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
-RUN npx prisma db push --accept-data-loss
+RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)" && \
+    npx prisma db push --accept-data-loss
 
 CMD ["npm", "start"]

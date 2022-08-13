@@ -32,22 +32,26 @@ WORKDIR /myapp
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD prisma .
-RUN npx prisma generate
+RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN)" && \
+    npx prisma db generate
 
 ADD . .
-RUN npm run build
+
+
+RUN --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
+    --mount=type=secret,id=VAPID_PUBLIC_KEY \
+    --mount=type=secret,id=VAPID_PRIVATE_KEY \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN)" && \
+    export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" && \
+    export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" && \
+    npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
 
 ENV PORT="8080"
 ENV NODE_ENV="production"
-RUN --mount=type=secret,id=VAPID_PUBLIC_KEY \
-ARG VAPID_PUBLIC_KEY = $(cat /run/secrets/VAPID_PUBLIC_KEY)
-ENV VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY}"
-RUN --mount=type=secret,id=VAPID_PRIVATE_KEY \
-ARG VAPID_PRIVATE_KEY = $(cat /run/secrets/VAPID_PRIVATE_KEY)
-ENV VAPID_PRIVATE_KEY="${VAPID_PRIVATE_KEY}"
 
 WORKDIR /myapp
 
@@ -63,14 +67,13 @@ EXPOSE 3306
 EXPOSE 8080
 
 # connect to production and push
-RUN --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION \
-ARG PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION = $(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION)
-ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION}"
-RUN npx prisma db push --accept-data-loss
+RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION)" && \
+    npx prisma db push --accept-data-loss
 
 # connect to main and await dr
-RUN --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
-ARG PLANETSCALE_PRISMA_DATABASE_URL_MAIN = $(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN)
-ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_MAIN}"
-RUN npx prisma generate
+RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN)" && \
+    npx prisma db generate
+
 CMD ["npm", "start"]
