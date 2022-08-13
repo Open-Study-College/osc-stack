@@ -176,7 +176,7 @@ jobs:
           build-args: |
             VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
             VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
-            PLANETSCALE_PRISMA_DATABASE_URL_PRODCUCTION: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION }}
+            PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION }}
             PLANETSCALE_PRISMA_DATABASE_URL_MAIN: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_MAIN }}
             COMMIT_SHA=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
