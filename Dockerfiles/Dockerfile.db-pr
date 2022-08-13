@@ -41,13 +41,17 @@ RUN npm run build
 FROM base
 ENV PORT="8080"
 ENV NODE_ENV="production"
-ARG MY_DB_URL
 RUN --mount=type=secret,id=DB_NAME \
-RUN export PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" 
+    export DB_NAME="$(cat /run/secrets/DB_NAME)" 
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${MY_DB_URL}$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem"
+
 RUN --mount=type=secret,id=VAPID_PUBLIC_KEY \
-RUN export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" 
+    export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" 
+ENV VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY}"
+
 RUN --mount=type=secret,id=VAPID_PRIVATE_KEY \
-RUN export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" 
+    export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" 
+ENV VAPID_PUBLIC_KEY="${VAPID_PUBLIC_KEY}"
 
 WORKDIR /myapp
 
