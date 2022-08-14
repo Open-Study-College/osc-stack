@@ -76,8 +76,8 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
-            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}
             MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.db-pr
