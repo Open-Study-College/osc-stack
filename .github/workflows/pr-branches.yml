@@ -54,6 +54,20 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: create connection string to PR Branch
+        id: create-cs-main
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: pr
+          FROM: pr
+        run: |
+          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
+
       # file: ./Dockerfiles/Dockerfile.pr
       - name: 🐳 Docker build
         uses: docker/build-push-action@v2
