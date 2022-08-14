@@ -190,7 +190,7 @@ jobs:
           BRANCH_NAME: main
           FROM: main
         run: |
-          ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
+          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
 
       - run: echo $MY_DB_URL
 
