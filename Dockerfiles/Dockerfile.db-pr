@@ -83,6 +83,6 @@ RUN --mount=type=secret,id=DB_NAME \
     npx prisma db push --accept-data-loss
 
 ARG DATABASE_URL
-ENV PRISMA_PLANETSCALE_DATABASE_URL="${DATABASE_URL}"
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${DATABASE_URL}"
 
 CMD cross-env npm start
