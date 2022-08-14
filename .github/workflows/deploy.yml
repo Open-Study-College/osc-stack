@@ -214,7 +214,7 @@ jobs:
 
       - name: 🐳 Docker build staging
         id: docker-build-staging
-        if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
+        # if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v3
         with:
           context: .
