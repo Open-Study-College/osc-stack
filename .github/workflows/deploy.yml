@@ -164,6 +164,36 @@ jobs:
           username: x
           password: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: create connection string to BASE_REF
+        id: create-cs
+        if: ${{ (env.BASE_REF == 'production' || env.BASE_REF == 'release' || env.BASE_REF == 'staging') && env.PR_CLOSED == 'true' }}
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: ${{ env.BASE_REF }}
+          FROM: ${{ env.BASE_REF }}
+        run: |
+          ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
+
+      - name: create connection string to MAIN
+        id: create-cs-main
+        if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: main
+          FROM: main
+        run: |
+          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
+
       - name: 🐳 Docker build production
         id: docker-build-prod
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
@@ -176,9 +206,9 @@ jobs:
           build-args: |
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
             "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}"
-            "PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION }}"
-            "PLANETSCALE_PRISMA_DATABASE_URL_MAIN: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_MAIN }}"
-            "COMMIT_SHA=${{ github.sha }}""
+            "COMMIT_SHA=${{ github.sha }}"
+            "PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
+            "PLANETSCALE_PRISMA_DATABASE_URL_MAIN=${{ env.MY_DB_URL_MAIN }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
@@ -194,7 +224,7 @@ jobs:
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
             "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}"
             "COMMIT_SHA=${{ github.sha }}"
-            "PLANETSCALE_PRISMA_DATABASE_URL_RELEASE: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_RELEASE }}"
+            "PLANETSCALE_PRISMA_DATABASE_URL_RELEASE=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           file: ./Dockerfiles/Dockerfile.release
@@ -207,12 +237,11 @@ jobs:
           context: .
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.HEAD_REF }}-${{ github.sha }}
-          env: "PLANETSCALE_PRISMA_DATABASE_URL_STAGING: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_STAGING }}"
           build-args: |
             "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}"
             "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}"
             "COMMIT_SHA=${{ github.sha }}"
-            "PLANETSCALE_PRISMA_DATABASE_URL_STAGING: $PLANETSCALE_PRISMA_DATABASE_URL_STAGING"
+            "PLANETSCALE_PRISMA_DATABASE_URL_STAGING=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
           file: ./Dockerfiles/Dockerfile.staging
