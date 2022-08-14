@@ -77,8 +77,6 @@ DDL_STATEMENTS="$2"
 . .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
 create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate" "$FROM"
 
-
-. .pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "testcred"
     # if $2 and $3 are set, generate secret output links
     if [ -n "$2" ] && [ -n "$3" ]; then
