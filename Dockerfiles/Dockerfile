@@ -62,6 +62,9 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
+RUN mkdir -p prisma
+COPY ./prisma /app/prisma
+
 # connect to production and push
 RUN npx prisma db push --accept-data-loss
 
