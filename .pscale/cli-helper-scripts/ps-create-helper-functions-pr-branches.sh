@@ -3,7 +3,7 @@ function create-db-branch {
     local BRANCH_NAME=$2
     local ORG_NAME=$3
     local recreate_branch=$4
-    local FROM=$5
+    local DIR=$5
 
     # delete the branch if it already exists and recreate branch is set
     if [ -n "$recreate_branch" ]; then
