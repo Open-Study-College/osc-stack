@@ -81,4 +81,5 @@ CMD ["--mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
   cat /run/secrets/VAPID_PUBLIC_KEY >> .env \
   --mount=type=secret,id=VAPID_PRIVATE_KEY \
   cat /run/secrets/VAPID_PRIVATE_KEY >> .env \
+  && npx prisma generate \
   && npm run start" ]
