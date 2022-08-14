@@ -40,6 +40,8 @@ RUN npm run build
 # Finally, build the production image with minimal footprint
 FROM base
 ARG PLANETSCALE_PRISMA_DATABASE_URL_STAGING
+ARG VAPID_PUBLIC_KEY
+ARG VAPID_PRIVATE_KEY
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_STAGING}?sslaccept=strict&sslcert=./cacert.pem"
 ENV PORT="8080"
 ENV NODE_ENV="production"
