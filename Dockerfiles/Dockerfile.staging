@@ -61,8 +61,6 @@ ADD . .
 EXPOSE 3306
 EXPOSE 8080
 
-RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
-    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)" && \
-    npx cross-env prisma db push --accept-data-loss
+RUN npx prisma db push --accept-data-loss
 
 CMD ["npm", "start"]
