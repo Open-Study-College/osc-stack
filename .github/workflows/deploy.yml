@@ -165,7 +165,6 @@ jobs:
           password: ${{ secrets.FLY_API_TOKEN }}
 
       - name: create connection string to BASE_REF
-        if: ${{ env.PR_CLOSED == 'true' }}
         id: create-cs
         timeout-minutes: 3
         env:
