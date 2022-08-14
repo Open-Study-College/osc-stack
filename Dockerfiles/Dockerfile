@@ -76,6 +76,4 @@ RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN)" && \
     npx prisma db generate
 
-CMD [ "sh", "-c",  "--mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_PRODUCTION \
-    export PLANETSCALE_PRISMA_DATABASE_URL=$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN) && \
-    npm run start", ]
+CMD npm start -- -e="$ENVIRONMENT" -t="$TESTS"
