@@ -180,6 +180,7 @@ jobs:
 
       - name: create connection string to MAIN
         id: create-cs-main
+        if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         timeout-minutes: 3
         env:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
@@ -192,11 +193,9 @@ jobs:
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
 
-      - run: echo $MY_DB_URL
-
       - name: 🐳 Docker build production
         id: docker-build-prod
-        # if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
+        if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfiles/Dockerfile
