@@ -55,7 +55,7 @@ RUN --mount=type=secret,id=DB_NAME \
   --mount=type=secret,id=MY_DB_URL \
   --mount=type=secret,id=VAPID_PUBLIC_KEY \
   --mount=type=secret,id=VAPID_PRIVATE_KEY \
-  cat /run/secrets/DB_NAME > .env.local && \
+  cat /run/secrets/DB_NAME > .env && \
   echo "" >> .env && cat /run/secrets/MY_DB_URL >> .env && \
   echo "" >> .env && cat /run/secrets/VAPID_PUBLIC_KEY >> .env && \
   echo "" >> .env && cat /run/secrets/VAPID_PRIVATE_KEY >> .env && \
