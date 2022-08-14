@@ -175,7 +175,7 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ env.BASE_REF }}
         run: |
-          ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
+          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
 
       - run: echo $MY_DB_URL
 

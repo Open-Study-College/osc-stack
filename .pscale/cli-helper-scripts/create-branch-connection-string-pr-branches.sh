@@ -72,8 +72,6 @@ EOF
 BRANCH_NAME="$1"
 DDL_STATEMENTS="$2" 
 
-. .pscale/cli-helper-scripts/set-db-and-org-and-branch-name.sh
-
 create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$BRANCH_NAME"
     # if $2 and $3 are set, generate secret output links
     if [ -n "$2" ] && [ -n "$3" ]; then
