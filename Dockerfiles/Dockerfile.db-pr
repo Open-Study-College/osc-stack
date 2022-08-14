@@ -42,30 +42,19 @@ RUN --mount=type=secret,id=DB_NAME \
     npx prisma generate
 
 ADD . .
-# RUN --mount=type=secret,id=DB_NAME \
-#     --mount=type=secret,id=MY_DB_URL \
-#     --mount=type=secret,id=VAPID_PUBLIC_KEY \
-#     --mount=type=secret,id=VAPID_PRIVATE_KEY \
-#     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
-#     export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" && \
-#     export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" && \
-#     npm run build
-
-RUN --mount=type=secret,id=DATABASE_URL \
-  --mount=type=secret,id=VAPID_PUBLIC_KEY \
-  --mount=type=secret,id=VAPID_PRIVATE_KEY \
-  cat /run/secrets/DATABASE_URL > .env && \
-  echo "" >> .env && cat /run/secrets/VAPID_PUBLIC_KEY >> .env && \
-  echo "" >> .env && cat /run/secrets/VAPID_PRIVATE_KEY >> .env && \
-  npm run build
+RUN --mount=type=secret,id=DB_NAME \
+    --mount=type=secret,id=MY_DB_URL \
+    --mount=type=secret,id=VAPID_PUBLIC_KEY \
+    --mount=type=secret,id=VAPID_PRIVATE_KEY \
+    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
+    export VAPID_PUBLIC_KEY="$(cat /run/secrets/VAPID_PUBLIC_KEY)" && \
+    export VAPID_PRIVATE_KEY="$(cat /run/secrets/VAPID_PRIVATE_KEY)" && \
+    npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
 ENV PORT="8080"
 ENV NODE_ENV="production"
-
-ARG PLANETSCALE_PRISMA_DATABASE_URL=$(cat /root/PLANETSCALE_PRISMA_DATABASE_URL); 
-ENV PLANETSCALE_PRISMA_DATABASE_URL = "${PLANETSCALE_PRISMA_DATABASE_URL}"
 
 WORKDIR /myapp
 
@@ -86,7 +75,10 @@ RUN --mount=type=secret,id=DB_NAME \
     export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/MY_DB_URL)$(cat /run/secrets/DB_NAME)?sslaccept=strict&sslcert=./cacert.pem" && \
     npx prisma db push --accept-data-loss
 
-ARG DATABASE_URL
-ENV PLANETSCALE_PRISMA_DATABASE_URL="${DATABASE_URL}"
-
-CMD cross-env npm start
+CMD ["--mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_MAIN \
+  cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_MAIN >> .env \
+  --mount=type=secret,id=VAPID_PUBLIC_KEY \
+  cat /run/secrets/VAPID_PUBLIC_KEY >> .env \
+  --mount=type=secret,id=VAPID_PRIVATE_KEY \
+  cat /run/secrets/VAPID_PRIVATE_KEY >> .env \
+  && npm run start" ]

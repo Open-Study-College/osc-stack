@@ -85,7 +85,6 @@ jobs:
             "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}"
             "DB_NAME=${{ secrets.DB_NAME }}"
             "MY_DB_URL=${{ env.MY_DB_URL }}"
-            "DATABASE_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
           context: .
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
