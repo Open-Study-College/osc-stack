@@ -17,13 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: format base_ref
-        uses: bluwy/substitute-string-action@v1
-        id: findandreplace
-        with:
-          _input-text: ${{ github.base_ref }}
-          /: "-"
-
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
@@ -34,8 +27,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ github.event.number }}
-          DIR: /migrationTmpData
-          FROM: ${{ steps.findandreplace.outputs.result }}
+          FROM: ${{ github.base_ref }}
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
@@ -84,10 +76,10 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
-            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
-            MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
-            COMMIT_SHA=${{ github.sha }}
+            "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}"
+            "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}"
+            "MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem"
+            "COMMIT_SHA=${{ github.sha }}"
           file: ./Dockerfiles/Dockerfile.db-pr
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
