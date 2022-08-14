@@ -40,8 +40,6 @@ RUN npm run build
 # Finally, build the production image with minimal footprint
 FROM base
 ARG PLANETSCALE_PRISMA_DATABASE_URL_STAGING
-ARG VAPID_PUBLIC_KEY
-ARG VAPID_PRIVATE_KEY
 ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_STAGING}"
 ENV PORT="8080"
 ENV NODE_ENV="production"
@@ -64,8 +62,6 @@ COPY ./prisma /app/prisma
 EXPOSE 3306
 EXPOSE 8080
 
-RUN  --mount=type=secret,id=PLANETSCALE_PRISMA_DATABASE_URL_STAGING \
-    export PLANETSCALE_PRISMA_DATABASE_URL="$(cat /run/secrets/PLANETSCALE_PRISMA_DATABASE_URL_STAGING)" && \
-    npx prisma db push --accept-data-loss
+RUN npx prisma db push --accept-data-loss
 
 CMD ["npm", "start"]
