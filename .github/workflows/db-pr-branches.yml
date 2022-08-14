@@ -17,13 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: format base_ref
-        uses: bluwy/substitute-string-action@v1
-        id: findandreplace
-        with:
-          _input-text: ${{ github.base_ref }}
-          /: "-"
-
       - name: Create database branch - if asked, please click on displayed link to authenticate
         id: create-db-branch
         timeout-minutes: 3
@@ -35,7 +28,6 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr-${{ github.event.number }}
           DIR: ${{ env.BASE_REF }}
-          FROM: ${{ steps.findandreplace.outputs.result }}
         run: |
           ./.pscale/cli-helper-scripts/create-db-branch-dr-and-connection-pr-branches.sh "$BRANCH_NAME"
 
