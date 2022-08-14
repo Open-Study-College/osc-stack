@@ -66,7 +66,7 @@ jobs:
           BRANCH_NAME: pr
           FROM: pr
         run: |
-          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
+          ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 
       # file: ./Dockerfiles/Dockerfile.pr
       - name: 🐳 Docker build
@@ -78,8 +78,8 @@ jobs:
           build-args: |
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}
             VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}
-            COMMIT_SHA=${{ github.sha }}
             PLANETSCALE_PRISMA_DATABASE_URL_PR=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
+            COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.staging
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
