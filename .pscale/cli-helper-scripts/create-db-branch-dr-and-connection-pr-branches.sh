@@ -6,8 +6,8 @@
 . .pscale/cli-helper-scripts/authenticate-ps.sh
 
 . .pscale/cli-helper-scripts/ps-create-helper-functions-pr-branches.sh
-create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate" "$DIR"
+create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate" "$FROM"
 
 . .pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "${BRANCH_NAME}" 
 
-. .pscale/cli-helper-scripts/dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$DIR"
+. .pscale/cli-helper-scripts/dump-and-restore-db-branch.sh "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$FROM"

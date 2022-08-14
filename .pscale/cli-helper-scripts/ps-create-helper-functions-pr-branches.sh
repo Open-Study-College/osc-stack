@@ -3,7 +3,7 @@ function create-db-branch {
     local BRANCH_NAME=$2
     local ORG_NAME=$3
     local recreate_branch=$4
-    local DIR=$5
+    local FROM=$5
 
     # delete the branch if it already exists and recreate branch is set
     if [ -n "$recreate_branch" ]; then
@@ -11,7 +11,7 @@ function create-db-branch {
         pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null    
     fi
 
-    pscale branch create "$DB_NAME" "$BRANCH_NAME" --region us-east --org "$ORG_NAME" --from "$DIR"
+    pscale branch create "$DB_NAME" "$BRANCH_NAME" --region us-east --org "$ORG_NAME" --from "$FROM"
     # if branch creation fails, exit with error
     if [ $? -ne 0 ]; then
         echo "Failed to create branch $BRANCH_NAME for database $DB_NAME"
