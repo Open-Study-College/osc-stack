@@ -2,7 +2,7 @@ function delete-branch-connection-string {
     local DB_NAME=$1
     local BRANCH_NAME=$2
     local ORG_NAME=$3
-    local CREDS=${4,,}-CICD-
+    local CREDS=${4,,}-cicd-
     local secretshare=$5
 
     # delete password if it already existed
@@ -17,6 +17,7 @@ function delete-branch-connection-string {
     local output=`echo $raw_output | jq -r "[.[] | select(.display_name.startswith(\"$CREDS\")) ] | .[1].id "`
     # if output is not "null", then password exists, delete it
 
+    echo "$output"
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
         pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$output" --org "$ORG_NAME"
