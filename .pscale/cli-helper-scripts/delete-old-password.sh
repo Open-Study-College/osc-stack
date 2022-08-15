@@ -19,7 +19,7 @@ function delete-branch-connection-string {
 
     for row in $(echo "${output}"); do
         echo "$output"
-        local password=`echo $row | jq -r .id`
+        local password=`echo $row | jq -r "[.id]"`
         echo "$password"
         if [ "$password" != "null" ]; then
             echo "Deleting existing password $password"
