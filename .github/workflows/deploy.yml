@@ -204,7 +204,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: main-shadow
-          FROM: main-shadow
+          FROM: mainShadow
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string-main-shadow.sh
 
@@ -345,6 +345,7 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ env.BASE_REF }}
           FROM: ${{ env.BASE_REF }}
+
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
 
