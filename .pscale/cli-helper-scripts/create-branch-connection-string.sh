@@ -2,7 +2,7 @@ function create-branch-connection-string {
     local DB_NAME=$1
     local BRANCH_NAME=$2
     local ORG_NAME=$3
-    local CREDS=${4,,}-CICD-$(uuidgen)
+    local CREDS=${4,,}_CICD_$(uuidgen)
     local secretshare=$5
 
     # delete password if it already existed
@@ -62,7 +62,6 @@ EOF
     export MY_DB_URL_MAIN=$DB_URL
     echo "MY_DB_URL_MAIN=$DB_URL" >> $GITHUB_ENV
 }
-
 
 . .pscale/cli-helper-scripts/use-pscale-docker-image.sh
 . .pscale/cli-helper-scripts/wait-for-branch-readiness.sh
