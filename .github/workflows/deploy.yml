@@ -257,6 +257,7 @@ jobs:
 
       # target staging
       - name: 🚀 Deploy Staging
+        id: deploy-staging
         if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -266,6 +267,7 @@ jobs:
 
       # target release, base staging
       - name: 🚀 Deploy Release
+        id: deploy-release
         if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -275,6 +277,7 @@ jobs:
 
       # target prod, base release
       - name: 🚀 Deploy Production
+        id: deploy-production
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -299,7 +302,7 @@ jobs:
 
       - name: delete old connection string to BASE_REF
         id: delete-cs
-        if: steps.create-dr.conclusion != 'skipped'
+        if: steps.deploy-production.conclusion != 'skipped' && steps.deploy-release.conclusion != 'skipped' && steps.deploy-staging.conclusion != 'skipped'
         timeout-minutes: 3
         env:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
