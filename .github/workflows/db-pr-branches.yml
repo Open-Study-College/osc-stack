@@ -157,7 +157,7 @@ jobs:
 
       - name: delete old connection string to BASE_REF
         id: delete-cs
-        if: ${{ (env.BASE_REF == 'production' || env.BASE_REF == 'release' || env.BASE_REF == 'staging') && env.PR_CLOSED == 'true' }}
+        if: steps.deploy_pr.conclusion != 'skipped'
         timeout-minutes: 3
         env:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}

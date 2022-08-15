@@ -299,7 +299,7 @@ jobs:
 
       - name: delete old connection string to BASE_REF
         id: delete-cs
-        if: ${{ (env.BASE_REF == 'production' || env.BASE_REF == 'release' || env.BASE_REF == 'staging') && env.PR_CLOSED == 'true' }}
+        if: steps.create-dr.conclusion != 'skipped'
         timeout-minutes: 3
         env:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
@@ -309,5 +309,20 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ env.BASE_REF }}
           FROM: ${{ env.BASE_REF }}
+        run: |
+          ./.pscale/cli-helper-scripts/delete-old-password.sh
+
+      - name: delete old connection string to BASE_REF
+        id: delete-cs
+        if: steps.create-dr.conclusion != 'skipped'
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: main
+          FROM: main
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
