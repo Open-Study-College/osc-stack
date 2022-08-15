@@ -302,7 +302,7 @@ jobs:
 
       - name: delete old connection string to BASE_REF
         id: delete-cs
-        if: steps.deploy-production.conclusion != 'skipped' && steps.deploy-release.conclusion != 'skipped' && steps.deploy-staging.conclusion != 'skipped'
+        if: steps.deploy-production.conclusion != 'skipped' || steps.deploy-release.conclusion != 'skipped' || steps.deploy-staging.conclusion != 'skipped'
         timeout-minutes: 3
         env:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
