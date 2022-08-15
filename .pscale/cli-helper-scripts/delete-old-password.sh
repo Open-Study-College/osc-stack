@@ -14,7 +14,7 @@ function delete-branch-connection-string {
         exit 1
     fi
 
-    local output=`echo $raw_output | jq -r "[.[] | select(.display_name | startswith(\"$CREDS\")) | [] ]"`
+    local output=`echo $raw_output | jq -r ".[] | select(.display_name | startswith(\"$CREDS\")) "`
     # if output is not "null", then password exists, delete it
 
     for row in $(echo "${output}"); do
