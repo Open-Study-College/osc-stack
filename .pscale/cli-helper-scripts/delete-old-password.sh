@@ -28,6 +28,7 @@ function delete-branch-connection-string {
                 exit 1
             fi
         fi
+        count=$((count+1))
     done
 }
 
