@@ -206,7 +206,7 @@ jobs:
           BRANCH_NAME: main-shadow
           FROM: mainShadow
         run: |
-          ./.pscale/cli-helper-scripts/create-branch-connection-string-main-shadow.sh
+          ./.pscale/cli-helper-scripts/create-branch-connection-string-shadow.sh
 
       - name: 🐳 Docker build production
         id: docker-build-prod
