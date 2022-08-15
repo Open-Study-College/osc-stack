@@ -16,12 +16,11 @@ function delete-branch-connection-string {
 
     local output=`echo $raw_output | jq -r "[.[] | select(.display_name | startswith(\"$CREDS\")) ]"`
     # if output is not "null", then password exists, delete it
-
     echo $output | jq -r '.[].id' | while read -r password ; do
         echo "$password"
         if [ "$password" != "null" ]; then
             echo "Deleting existing password $password"
-            pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$password" --org "$ORG_NAME"
+            pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$password" --org "$ORG_NAME" </dev/null
             # check return code, if not 0 then error
             if [ $? -ne 0 ]; then
                 echo "Error: pscale password delete returned non-zero exit code $?"
