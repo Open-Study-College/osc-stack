@@ -19,9 +19,9 @@ function delete-branch-connection-string {
 
     for row in $(echo "${output}"); do
         echo "$output"
-        local password=`echo $row | jq -r "[.[] | .[0].id ]"`
+        local password=`echo $row | jq -r .id`
         echo "$password"
-        if [ "$output" != "null" ]; then
+        if [ "$password" != "null" ]; then
             echo "Deleting existing password $password"
             pscale password delete --force "$DB_NAME" "$BRANCH_NAME" "$password" --org "$ORG_NAME"
             # check return code, if not 0 then error
