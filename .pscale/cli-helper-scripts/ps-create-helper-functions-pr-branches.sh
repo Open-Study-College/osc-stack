@@ -54,9 +54,9 @@ function create-deploy-request {
     local ORG_NAME=$3
     local raw_output
     if ["$BRANCH_NAME" == "release"]; then 
-        raw_output =`pscale deploy-request create "$DB_NAME" "release" --org "$ORG_NAME" --format json --deploy-to "main-shadow"`; 
+        raw_output=`pscale deploy-request create "$DB_NAME" "release" --org "$ORG_NAME" --format json --deploy-to "main-shadow"`; 
     else 
-        raw_output =`pscale deploy-request create "$DB_NAME" "production" --org "$ORG_NAME" --format json --deploy-to "main"`; 
+        raw_output=`pscale deploy-request create "$DB_NAME" "production" --org "$ORG_NAME" --format json --deploy-to "main"`; 
     fi
 
     if [ $? -ne 0 ]; then
