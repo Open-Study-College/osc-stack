@@ -64,7 +64,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr
-          FROM: pr-${{ github.event.number }}
+          FROM: pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 
@@ -165,6 +165,6 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: pr
-          FROM: pr-${{ github.event.number }}
+          FROM: pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
