@@ -210,6 +210,7 @@ export default function App() {
     }, []);
     return (
         <Document>
+            <h1> random change </h1>
             <ChakraProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
                 <Outlet />
             </ChakraProvider>
