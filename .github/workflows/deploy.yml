@@ -257,6 +257,7 @@ jobs:
 
       # target staging
       - name: 🚀 Deploy Staging
+        id: deploy-staging
         if: ${{ env.BASE_REF == 'staging' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -266,6 +267,7 @@ jobs:
 
       # target release, base staging
       - name: 🚀 Deploy Release
+        id: deploy-release
         if: ${{ env.BASE_REF == 'release' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -275,6 +277,7 @@ jobs:
 
       # target prod, base release
       - name: 🚀 Deploy Production
+        id: deploy-production
         if: ${{ env.BASE_REF == 'production' && env.PR_CLOSED == 'true' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -296,3 +299,33 @@ jobs:
           FROM: main
         run: |
           ./.pscale/cli-helper-scripts/create-dr-to-main.sh "$BRANCH_NAME"
+
+      - name: delete old connection string to BASE_REF
+        id: delete-cs
+        if: steps.deploy-production.conclusion != 'skipped' || steps.deploy-release.conclusion != 'skipped' || steps.deploy-staging.conclusion != 'skipped'
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: ${{ env.BASE_REF }}
+          FROM: ${{ env.BASE_REF }}
+        run: |
+          ./.pscale/cli-helper-scripts/delete-old-password.sh
+
+      - name: delete old connection string to MAIN
+        id: delete-cs-main
+        if: steps.create-dr.conclusion != 'skipped'
+        timeout-minutes: 3
+        env:
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+          PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+          ORG_NAME: ${{secrets.ORG_NAME}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          GITHUB_USER: ${{github.actor}}
+          BRANCH_NAME: main
+          FROM: main
+        run: |
+          ./.pscale/cli-helper-scripts/delete-old-password.sh

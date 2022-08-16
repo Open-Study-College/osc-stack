@@ -213,6 +213,7 @@ export default function App() {
             <h1> random change </h1>
             <ChakraProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
                 <Outlet />
+                <h1> tester </h1>
             </ChakraProvider>
         </Document>
     );
