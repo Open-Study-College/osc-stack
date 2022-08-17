@@ -30,16 +30,16 @@ EOF
         local link=`curl -s -X POST -d "plain&secret=$SECRET_TEXT" https://shared-secrets-planetscale.herokuapp.com/`
         echo "$link"
         echo "::set-output name=CONNECTION_STRING_LINK::${link}"
-        export MY_DB_URL_MAIN=$DB_URL
-        echo "MY_DB_URL_MAIN=$DB_URL" >> $GITHUB_ENV
+        export MY_DB_URL_MAIN_SHADOW=$DB_URL
+        echo "MY_DB_URL_MAIN_SHADOW=$DB_URL" >> $GITHUB_ENV
     fi
     echo
     echo "Alternatively, you can connect to your new branch like this:"
     echo "pscale shell \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
     echo "or, to create a local tunnel to the database:"
     echo "pscale connect \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
-    export MY_DB_URL_MAIN=$DB_URL
-    echo "MY_DB_URL_MAIN=$DB_URL" >> $GITHUB_ENV
+    export MY_DB_URL_MAIN_SHADOW=$DB_URL
+    echo "MY_DB_URL_MAIN_SHADOW=$DB_URL" >> $GITHUB_ENV
 }
 
 . .pscale/cli-helper-scripts/use-pscale-docker-image.sh
@@ -52,7 +52,7 @@ create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "$PASSWORD
     if [ -n "$2" ] && [ -n "$3" ]; then
         for i in `seq 1 $2`; do
             for j in `seq 1 $3`; do
-                echo "::set-output name=dbconnection_${i}_${j}::`curl -s -X POST -d "plain&secret=$MY_DB_URL_MAIN" https://shared-secrets-planetscale.herokuapp.com/`"          
+                echo "::set-output name=dbconnection_${i}_${j}::`curl -s -X POST -d "plain&secret=$MY_DB_URL_MAIN_SHADOW" https://shared-secrets-planetscale.herokuapp.com/`"          
             done
         done
     fi
