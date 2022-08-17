@@ -173,7 +173,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ env.BASE_REF }}
-          PASSWORD_NAME: ${{ env.BASE_REF }}
+          PASSWORD_NAME: ${{ env.BASE_REF }}-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 
@@ -188,7 +188,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: main
-          PASSWORD_NAME: main
+          PASSWORD_NAME: main-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
 
@@ -204,7 +204,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: main-shadow
-          PASSWORD_NAME: main-shadow
+          PASSWORD_NAME: main-shadow-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/create-branch-connection-string-shadow.sh
 
@@ -342,7 +342,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: ${{ env.BASE_REF }}
-          PASSWORD_NAME: ${{ env.BASE_REF }}
+          PASSWORD_NAME: ${{ env.BASE_REF }}-${{ steps.app_name.outputs.value }}
 
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
@@ -358,7 +358,7 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: main
-          PASSWORD_NAME: main
+          PASSWORD_NAME: main-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
 
@@ -374,6 +374,6 @@ jobs:
           DB_NAME: ${{secrets.DB_NAME}}
           GITHUB_USER: ${{github.actor}}
           BRANCH_NAME: main-shadow
-          PASSWORD_NAME: main-shadow
+          PASSWORD_NAME: main-shadow-${{ steps.app_name.outputs.value }}
         run: |
           ./.pscale/cli-helper-scripts/delete-old-password.sh
