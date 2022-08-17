@@ -66,7 +66,7 @@ jobs:
           BRANCH_NAME: pr
           FROM: pr
         run: |
-          ./.pscale/cli-helper-scripts/create-branch-connection-string.sh
+          ./.pscale/cli-helper-scripts/create-branch-connection-string-pr-branches.sh
 
       # file: ./Dockerfiles/Dockerfile.pr
       - name: 🐳 Docker build
@@ -76,11 +76,11 @@ jobs:
           push: true
           tags: registry.fly.io/${{ steps.app_name.outputs.value }}:${{ env.BRANCH }}-${{ github.sha }}
           build-args: |
-            VAPID_PUBLIC_KEY=${{ env.VAPID_PUBLIC_KEY}}
-            VAPID_PRIVATE_KEY=${{ env.VAPID_PRIVATE_KEY}}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}
+            PLANETSCALE_PRISMA_DATABASE_URL_PR=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
             COMMIT_SHA=${{ github.sha }}
-            PLANETSCALE_PRISMA_DATABASE_URL_PR: ${{ secrets.PLANETSCALE_PRISMA_DATABASE_URL_STAGING }}
-          file: ./Dockerfiles/Dockerfile.staging
+          file: ./Dockerfiles/Dockerfile.pr
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
@@ -144,7 +144,6 @@ jobs:
           args: "volumes create data --region lhr --size 1 --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
 
       - name: 🚀 Deploy PR Branch
-        if: ${{ github.base_ref != 'production' && github.base_ref != 'release' }}
         id: deploy_pr
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
@@ -154,3 +153,18 @@ jobs:
           args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      # - name: delete old connection string to BASE_REF
+      #   id: delete-cs
+      #   if: steps.deploy_pr.conclusion != 'skipped'
+      #   timeout-minutes: 3
+      #   env:
+      #     PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+      #     PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+      #     ORG_NAME: ${{secrets.ORG_NAME}}
+      #     DB_NAME: ${{secrets.DB_NAME}}
+      #     GITHUB_USER: ${{github.actor}}
+      #     BRANCH_NAME: pr
+      #     FROM: pr
+      #   run: |
+      #     ./.pscale/cli-helper-scripts/delete-old-password.sh
