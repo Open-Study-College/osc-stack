@@ -8,7 +8,7 @@ function create-db-branch {
     # delete the branch if it already exists and recreate branch is set
     if [ -n "$recreate_branch" ]; then
         echo "Trying to delete branch $BRANCH_NAME if it already existed ..."
-        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null    
+        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null
     fi
 
     pscale branch create "$DB_NAME" "$BRANCH_NAME" --region us-east --org "$ORG_NAME" --from "$FROM"
@@ -53,9 +53,9 @@ function create-deploy-request {
     local BRANCH_NAME=$2
     local ORG_NAME=$3
     local raw_output
-    if [ "$BRANCH_NAME" == "release" ]; then 
+    if [ "$BRANCH_NAME" == "release" ]; then
        raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main-shadow"`
-    else 
+    else
         raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main"`
     fi
 
@@ -72,7 +72,7 @@ function create-deploy-request {
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
     export DEPLOY_REQUEST_NUMBER=$deploy_request_number
     echo "DEPLOY_REQUEST_NUMBER=$deploy_request_number" >> $GITHUB_ENV
 }
@@ -133,7 +133,7 @@ function create-branch-info {
     fi
 
     export BRANCH_NAME="$branch_name"
-    
+
     local branch_url="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/${BRANCH_NAME}"
     export BRANCH_URL="$branch_url"
 
@@ -149,7 +149,7 @@ function create-branch-info {
 function create-diff-for-ci {
     local DB_NAME=$1
     local ORG_NAME=$2
-    local deploy_request_number=$3 
+    local deploy_request_number=$3
     local BRANCH_NAME=$4
     local refresh_schema=$5
 
@@ -159,7 +159,7 @@ function create-diff-for-ci {
     # updating schema for branch
     if [ -n "$refresh_schema" ]; then
         pscale branch refresh-schema "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME"
-    fi  
+    fi
 
     local lines=""
     # read shell output line by line and assign to variable
@@ -167,7 +167,7 @@ function create-diff-for-ci {
         lines="$lines\n$line"
     done < <(pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME" --format=json | jq .[].raw)
 
-    
+
     if [ $? -ne 0 ]; then
         BRANCH_DIFF="$BRANCH_DIFF : ${lines}"
     else
@@ -191,7 +191,7 @@ function wait_for_deploy_request_merged {
     local db=$2
     local number=$3
     local org=$4
-    
+
     # check whether fifth parameter is set, otherwise use default value
     if [ -z "$5" ]; then
         local max_timeout=600
@@ -218,7 +218,7 @@ function wait_for_deploy_request_merged {
                 wait=$((wait * 2))
             else
                 wait=$max_timeout
-            fi  
+            fi
 
             count=$((count+1))
             if [ $count -ge $retries ]; then
