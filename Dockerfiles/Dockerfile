@@ -70,6 +70,6 @@ RUN npx prisma db push --accept-data-loss
 
 # connect to main and await dr
 ARG PLANETSCALE_PRISMA_DATABASE_URL_MAIN
-ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_MAIN}"
+ENV PLANETSCALE_PRISMA_DATABASE_URL="${PLANETSCALE_PRISMA_DATABASE_URL_MAIN}?sslaccept=strict&sslcert=./cacert.pem"
 RUN npx prisma generate
 CMD ["npm", "start"]
