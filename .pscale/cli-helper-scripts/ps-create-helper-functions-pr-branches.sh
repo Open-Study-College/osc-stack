@@ -8,7 +8,7 @@ function create-db-branch {
     # delete the branch if it already exists and recreate branch is set
     if [ -n "$recreate_branch" ]; then
         echo "Trying to delete branch $BRANCH_NAME if it already existed ..."
-        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null
+        pscale branch delete "$DB_NAME" "$BRANCH_NAME" --force --org "$ORG_NAME" 2>/dev/null    
     fi
 
     pscale branch create "$DB_NAME" "$BRANCH_NAME" --region us-east --org "$ORG_NAME" --from "$FROM"
@@ -52,17 +52,15 @@ function create-deploy-request {
     local DB_NAME=$1
     local BRANCH_NAME=$2
     local ORG_NAME=$3
-    local raw_output
-    if [ "$BRANCH_NAME" == "release" ]; then
-       raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main-shadow"`
-    else
-        raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main"`
+
+    if [ "$BRANCH_NAME" == "release" ]; then 
+       echo "$DB_NAME" 
+       echo "$BRANCH_NAME" 
+       raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main-shadow"`;
+    else        
+       raw_output=`pscale deploy-request create "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME" --format json --deploy-to "main"`;
     fi
 
-    if [ $? -ne 0 ]; then
-        echo "Deploy request could not be created: $raw_output"
-        exit 1
-    fi
     local deploy_request_number=`echo $raw_output | jq -r '.number'`
     # if deploy request number is empty, then error
     if [ -z "$deploy_request_number" ]; then
@@ -72,7 +70,7 @@ function create-deploy-request {
 
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
-    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+    create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"  
     export DEPLOY_REQUEST_NUMBER=$deploy_request_number
     echo "DEPLOY_REQUEST_NUMBER=$deploy_request_number" >> $GITHUB_ENV
 }
@@ -133,7 +131,7 @@ function create-branch-info {
     fi
 
     export BRANCH_NAME="$branch_name"
-
+    
     local branch_url="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/${BRANCH_NAME}"
     export BRANCH_URL="$branch_url"
 
@@ -149,7 +147,7 @@ function create-branch-info {
 function create-diff-for-ci {
     local DB_NAME=$1
     local ORG_NAME=$2
-    local deploy_request_number=$3
+    local deploy_request_number=$3 
     local BRANCH_NAME=$4
     local refresh_schema=$5
 
@@ -159,7 +157,7 @@ function create-diff-for-ci {
     # updating schema for branch
     if [ -n "$refresh_schema" ]; then
         pscale branch refresh-schema "$DB_NAME" "$BRANCH_NAME" --org "$ORG_NAME"
-    fi
+    fi  
 
     local lines=""
     # read shell output line by line and assign to variable
@@ -167,23 +165,22 @@ function create-diff-for-ci {
         lines="$lines\n$line"
     done < <(pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME" --format=json | jq .[].raw)
 
-
+    
     if [ $? -ne 0 ]; then
         BRANCH_DIFF="$BRANCH_DIFF : ${lines}"
     else
         BRANCH_DIFF=$lines
     fi
 
-    if [ -n "$CI" ]; then
-        BRANCH_DIFF="${BRANCH_DIFF//'"'/''}"
-        BRANCH_DIFF="${BRANCH_DIFF//'%'/'%25'}"
-        BRANCH_DIFF="${BRANCH_DIFF//'\n'/'%0A'}"
-        BRANCH_DIFF="${BRANCH_DIFF//'\r'/'%0D'}"
-        # replace tabs with whitespace
-        BRANCH_DIFF="${BRANCH_DIFF//'\t'/' '}"
+    BRANCH_DIFF="${BRANCH_DIFF//'"'/''}"
+    BRANCH_DIFF="${BRANCH_DIFF//'%'/'%25'}"
+    BRANCH_DIFF="${BRANCH_DIFF//'\n'/'%0A'}"
+    BRANCH_DIFF="${BRANCH_DIFF//'\r'/'%0D'}"
+    # replace tabs with whitespace
+    BRANCH_DIFF="${BRANCH_DIFF//'\t'/' '}"
 
-        echo "::set-output name=BRANCH_DIFF::$BRANCH_DIFF"
-    fi
+    echo "::set-output name=BRANCH_DIFF::$BRANCH_DIFF"
+    echo "$BRANCH_DIFF"
 }
 
 function wait_for_deploy_request_merged {
@@ -191,7 +188,7 @@ function wait_for_deploy_request_merged {
     local db=$2
     local number=$3
     local org=$4
-
+    
     # check whether fifth parameter is set, otherwise use default value
     if [ -z "$5" ]; then
         local max_timeout=600
@@ -212,13 +209,13 @@ function wait_for_deploy_request_merged {
         fi
         local output=`echo $raw_output | jq ".[] | select(.number == $number) | .deployment.state"`
         # test whether output is pending, if so, increase wait timeout exponentially
-        if [ "$output" = "\"submitting\"" ] || [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
+        if [ -z "$output" ] || [ "$output" = "\"submitting\"" ] || [ "$output" = "\"pending\"" ] || [ "$output" = "\"in_progress\"" ]; then
             # increase wait variable exponentially but only if it is less than max_timeout
             if [ $((wait * 2)) -le $max_timeout ]; then
                 wait=$((wait * 2))
             else
                 wait=$max_timeout
-            fi
+            fi  
 
             count=$((count+1))
             if [ $count -ge $retries ]; then
@@ -229,7 +226,12 @@ function wait_for_deploy_request_merged {
             echo "Retrying in $wait seconds..."
             sleep $wait
         elif [ "$output" = "\"no_changes\"" ] || [ "$output" = "\"ready\"" ] || [ "$output" = "\"complete\"" ] || [ "$output" = "\"complete_pending_revert\"" ]; then
-            echo  "Deploy-request $number has been deployed successfully."
+            if [ "$output" = "\"no_changes\"" ]; then
+                pscale deploy-request close "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
+            else
+                pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
+                exit 5
+            fi
             return 0
         else
             echo  "Deploy-request $number with unknown status: $output"
@@ -243,24 +245,22 @@ function create-deployment {
     local BRANCH_NAME=$2
     local DEPLOY_REQUEST_NUMBER=$3
     local ORG_NAME=$4
+    local ci=true
+
+    # local raw_output=`pscale deploy-request diff "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --format json --org "$ORG_NAME"`
 
     echo "Going to deploy deployment request $deploy_request with the following changes: "
+    # jq -e '.. | select(type == "array" and length == 0)' "$raw_output"
 
     create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$DEPLOY_REQUEST_NUMBER" "$BRANCH_NAME"
+
+    # if array is empty
 
     wait_for_deploy_request_merged 9 "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" "$ORG_NAME" 60
     if [ $? -ne 0 ]; then
         echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
         echo "Check out the deploy request status at $deploy_request"
-        exit 5
     else
         echo "Check out the deploy request at $deploy_request"
-    fi
-
-    pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
-    # check return code, if not 0 then error
-    if [ $? -ne 0 ]; then
-        echo "Error: pscale deploy-request deploy returned non-zero exit code"
-        exit 1
     fi
 }
