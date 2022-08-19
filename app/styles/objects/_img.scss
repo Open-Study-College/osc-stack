@@ -1,4 +1,4 @@
-@use "../tools/object-fit";
+@use "../tools" as t;
 
 /* ============================
 // $IMAGE OBJECT
@@ -35,19 +35,19 @@
     }
 
     &--cover {
-        @include object-fit.object-fit(cover, center);
+        @include t.object-fit(cover, center);
 
         &-right {
-            @include object-fit.object-fit(cover, right);
+            @include t.object-fit(cover, right);
         }
 
         &-left {
-            @include object-fit.object-fit(cover, left);
+            @include t.object-fit(cover, left);
         }
     }
 
     &--contain {
-        @include object-fit.object-fit(contain, center);
+        @include t.object-fit(contain, center);
     }
 
     &--auto {

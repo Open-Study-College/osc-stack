@@ -7,44 +7,13 @@
 /*
   Contents
   --------
-	0 	$SETTINGS
-	1 	$TOOLS
-	2 	$Reset
-	3 	$ELEMENTS
-	4 	$OBJECTS
-	5 	$COMPONENTS
-	6	$LAYOUT
-	7 	$UTILITIES
-	8 	$STYLEGUIDE
+	0 	$ELEMENTS
+	2 	$OBJECTS
+	3 	$COMPONENTS
+	4	$LAYOUT
+	5 	$UTILITIES
+	6 	$STYLEGUIDE
 */
-
-/* ============================
-// $SETTINGS
-// Preprocessor variables and methods
-*/
-@use "settings/animation";
-@use "settings/colors";
-@use "settings/global";
-@use "settings/containers";
-@use "settings/mq";
-@use "settings/spacing";
-@use "settings/typography";
-@use "settings/zindex";
-@use "settings/radius";
-
-/* ============================
-// $TOOLS
-// Mixins and functions
-*/
-@use "tools/font_size";
-@use "tools/functions";
-@use "tools/hover";
-@use "tools/mq" as mq2;
-@use "tools/object-fit";
-@use "tools/position";
-@use "tools/ratio";
-@use "tools/zindex" as zindex2;
-@use "tools/animation" as animation2;
 
 /* ============================
 // $ELEMENTS

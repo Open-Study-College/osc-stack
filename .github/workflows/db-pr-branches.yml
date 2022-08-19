@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     name: Build database branch and pr branch
-    if: ${{ (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
+    if: ${{ github.head_ref != 'staging' && github.head_ref != 'release' && (startsWith(github.head_ref, 'db') == true || startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -79,7 +79,7 @@ jobs:
           build-args: |
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}
             VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}
-            MY_DB_URL=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
+            PLANETSCALE_PRISMA_DATABASE_URL_PR_DB=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.db-pr
           cache-from: type=local,src=/tmp/.buildx-cache
