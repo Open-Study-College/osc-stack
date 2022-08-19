@@ -230,7 +230,6 @@ function wait_for_deploy_request_merged {
                 pscale deploy-request close "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
             else
                 pscale deploy-request deploy "$DB_NAME" "$DEPLOY_REQUEST_NUMBER" --org "$ORG_NAME"
-                exit 5
             fi
             return 0
         else
