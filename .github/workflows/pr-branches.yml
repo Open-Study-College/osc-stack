@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: 🐳 Build PR Branch
-    if: ${{ (!startsWith(github.head_ref, 'db') == true || !startsWith(github.head_ref, 'Db') == true) }}
+    if: ${{ github.head_ref != 'staging' && github.head_ref != 'release' && (!startsWith(github.head_ref, 'db') == true || !startsWith(github.head_ref, 'Db') == true) }}
     runs-on: ubuntu-latest
     steps:
       - name: echo pr title
@@ -78,7 +78,7 @@ jobs:
           build-args: |
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY}}
             VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY}}
-            PLANETSCALE_PRISMA_DATABASE_URL_PR=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}?sslaccept=strict&sslcert=./cacert.pem
+            PLANETSCALE_PRISMA_DATABASE_URL_PR=${{ env.MY_DB_URL }}${{ secrets.DB_NAME }}
             COMMIT_SHA=${{ github.sha }}
           file: ./Dockerfiles/Dockerfile.pr
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -153,7 +153,7 @@ jobs:
           args: "deploy --build-arg SESSION_SECRET=${{ secrets.FLY_PR_BRANCH_SESSION_SECRET }} --app pr-${{ github.event.number }}-${{ steps.app_name.outputs.value }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          
+
       - name: delete old connection string to BASE_REF
         id: delete-cs
         if: steps.deploy_pr.conclusion != 'skipped'
